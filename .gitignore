@@ -1,0 +1,6 @@
+# Jetbrains
+.idea
+
+# DotNet build files
+bin
+obj
