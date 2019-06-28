@@ -4,7 +4,7 @@ using System.Runtime.InteropServices;
 using OpenTK;
 using OpenTK.Graphics.OpenGL;
 
-namespace engine.Entity
+namespace Engine.Entity
 {
     public class Mesh
     {
@@ -12,14 +12,13 @@ namespace engine.Entity
         {
             POS=0
         }
-
         
         public uint gl_vao;
         public uint[] gl_buffers;
 
         public int num_vertices;
 
-        private Mesh(List<Vertex> vertices)
+        public Mesh(List<Vertex> vertices)
         {
             num_vertices = vertices.Count;
             
@@ -34,8 +33,12 @@ namespace engine.Entity
             }
             
             GL.BindVertexArray(gl_vao);
-            GL.GenBuffers(Enum.GetNames(typeof(VertexBuffer)).Length, gl_buffers);
 
+            int buffer_length = Enum.GetNames(typeof(VertexBuffer)).Length;
+
+            gl_buffers = new uint[buffer_length];
+            GL.GenBuffers(buffer_length, gl_buffers);
+            
             GL.BindBuffer(BufferTarget.ArrayBuffer, gl_buffers[(int) VertexBuffer.POS]);
             
             GL.BufferData(BufferTarget.ArrayBuffer,  Marshal.SizeOf( typeof(Vertex)) * vertices.Count,  ref Positions[0], BufferUsageHint.StaticDraw);
@@ -45,7 +48,7 @@ namespace engine.Entity
             GL.BindVertexArray(0);
         }
 
-        public void render()
+        public void Render()
         {
             GL.BindVertexArray(gl_vao);
             GL.DrawArrays(PrimitiveType.Triangles, 0, num_vertices);

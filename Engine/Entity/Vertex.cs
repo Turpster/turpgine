@@ -1,6 +1,6 @@
 using OpenTK;
 
-namespace engine.Entity
+namespace Engine.Entity
 {
     public struct Vertex
     {
