@@ -10,48 +10,49 @@ namespace Engine.Entity
     {
         enum VertexBuffer
         {
-            POS=0
+            Pos=0
         }
         
-        public uint gl_vao;
-        public uint[] gl_buffers;
+        public uint GlVao;
+        public uint[] GlBuffers;
 
-        public int num_vertices;
+        public int NumVertices;
 
         public Mesh(List<Vertex> vertices)
         {
-            num_vertices = vertices.Count;
+            NumVertices = vertices.Count;
             
-            GL.GenVertexArrays(1, out gl_vao);
-            GL.GenVertexArrays(1, gl_buffers);
+            GL.GenVertexArrays(1, out GlVao);
+            GL.GenVertexArrays(1, GlBuffers);
 
-            Vector3[] Positions = new Vector3[vertices.Count];
+            Vector3[] positions = new Vector3[vertices.Count];
 
             for (int i = 0; i < vertices.Count; i++)
             {    
-                Positions[i] = vertices[i].Position;
+                positions[i] = vertices[i].Position;
             }
             
-            GL.BindVertexArray(gl_vao);
+            GL.BindVertexArray(GlVao);
 
-            int buffer_length = Enum.GetNames(typeof(VertexBuffer)).Length;
+            int bufferLength = Enum.GetNames(typeof(VertexBuffer)).Length;
 
-            gl_buffers = new uint[buffer_length];
-            GL.GenBuffers(buffer_length, gl_buffers);
+            GlBuffers = new uint[bufferLength];
             
-            GL.BindBuffer(BufferTarget.ArrayBuffer, gl_buffers[(int) VertexBuffer.POS]);
+            GL.GenBuffers(bufferLength, GlBuffers);
             
-            GL.BufferData(BufferTarget.ArrayBuffer,  Marshal.SizeOf( typeof(Vertex)) * vertices.Count,  ref Positions[0], BufferUsageHint.StaticDraw);
-            GL.EnableVertexAttribArray((int) VertexBuffer.POS);
-            GL.VertexAttribPointer((int) VertexBuffer.POS, 3, VertexAttribPointerType.Float, false, 0, 0);
+            GL.BindBuffer(BufferTarget.ArrayBuffer, GlBuffers[(int) VertexBuffer.Pos]);
+            
+            GL.BufferData(BufferTarget.ArrayBuffer,  Marshal.SizeOf( typeof(Vertex)) * vertices.Count,  ref positions[0], BufferUsageHint.StaticDraw);
+            GL.EnableVertexAttribArray((int) VertexBuffer.Pos);
+            GL.VertexAttribPointer((int) VertexBuffer.Pos, 3, VertexAttribPointerType.Float, false, 0, 0);
 
             GL.BindVertexArray(0);
         }
 
         public void Render()
         {
-            GL.BindVertexArray(gl_vao);
-            GL.DrawArrays(PrimitiveType.Triangles, 0, num_vertices);
+            GL.BindVertexArray(GlVao);
+            GL.DrawArrays(PrimitiveType.Triangles, 0, NumVertices);
             GL.BindVertexArray(0);
         }
     }

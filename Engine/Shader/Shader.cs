@@ -1,36 +1,50 @@
 using System;
 using System.IO;
+using System.Text;
+using Engine.GlException;
 using OpenTK.Graphics.OpenGL4;
 
 namespace Engine.Shader
 {
-    public class Shader
+    public struct Shader
     {
-        public readonly string ShaderFileLoc; 
-        private int gl_shader;
-        
-        public Shader(string shaderFileLoc)
-        {
-            ShaderFileLoc = shaderFileLoc;
+        public readonly int GlShader;
 
-            gl_shader = GL.CreateProgram();
-            
-            string shaderSource = File.ReadAllText(shaderFileLoc);
-            
-            GL.ShaderSource(gl_shader, shaderSource);
-            GL.CompileShader(gl_shader);
-            
-            GL.GetShader(gl_shader, ShaderParameter.CompileStatus, out int isCompiled);
-            if (isCompiled == 0)
+        public string ShaderSource
+        {
+            get
             {
-                Console.WriteLine(GL.GetShaderInfoLog(gl_shader));
-                throw new ShaderCompileException(gl_shader);
+                StringBuilder source = new StringBuilder();
+                GL.GetShaderSource(GlShader, 1, out _, source);
+                return source.ToString();
             }
+            set => GL.ShaderSource(GlShader, value);
+        }
+        
+        public readonly ShaderType ShaderType;
+
+        public Shader(string shaderSource, ShaderType shaderType)
+        {
+            ShaderType = shaderType;    
+            
+            GlShader = GL.CreateShader(shaderType);
+            
+            ShaderSource = shaderSource;
+            
+            Compile();
         }
 
-        public void Use()
+        public Shader(Uri shaderSourceFile, ShaderType shaderType) : this(File.ReadAllText(shaderSourceFile.ToString()), shaderType) {}
+
+        private void Compile()
         {
-            GL.UseProgram(gl_shader);
+            GL.CompileShader(GlShader);
+            
+            GL.GetShader(GlShader, ShaderParameter.CompileStatus, out int glShaderCompileStatus);
+            if (glShaderCompileStatus != 0)
+            {
+                throw new GlShaderCompileException(GlShader);
+            }
         }
     }
 }
