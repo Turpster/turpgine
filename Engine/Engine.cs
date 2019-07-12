@@ -1,46 +1,50 @@
 using System;
 using System.Collections.Generic;
-using System.Net.Mime;
-using System.Threading;
 using Engine.Entity;
-using log4net.Core;
-using log4net.Repository.Hierarchy;
+using Engine.Shader;
 using OpenTK;
+using OpenTK.Graphics;
 using OpenTK.Graphics.OpenGL;
+using ShaderType = OpenTK.Graphics.OpenGL4.ShaderType;
+using LoggerLite;
 
 namespace engine
 {
     public class Engine
     {
-        public static Logger Logger { get; } = new RootLogger 
-        #if DEBUG
-            (Level.Debug);
-        #else            
-            (Level.Fine);
-        #endif
-
         static Engine engine;
         
         public GameWindow window;
 
         public Engine()
         {
-            SetupLogger();
-            
             window = new GameWindow(600, 600, null, "Hello World");
             
-            GL.ClearColor(0.05f, 0.15f, 0.3f, 1.0f);
-
+            GraphicsContext.CurrentContext.ErrorChecking = true;
+            
+            ShaderManager shaderManager = new ShaderManager( 
+                
+                new Shader("/home/turpster/Develop/Git/open-gl/Engine/Shader/GLSL/vertex-shader.vert", ShaderType.VertexShader),
+                new Shader("/home/turpster/Develop/Git/open-gl/Engine/Shader/GLSL/fragment-shader.frag", ShaderType.FragmentShader)
+                
+                );
+            
+            shaderManager.Use();
+            
             List<Vertex> vertices = new List<Vertex>();
             
             vertices.Add(new Vertex(new Vector3(0.5f, -0.5f, 1.0f)));
             vertices.Add(new Vertex(new Vector3(0.0f, 0.5f, 1.0f)));
             vertices.Add(new Vertex(new Vector3(-0.5f, -0.5f, 1.0f)));
-            
+
             Mesh mesh = new Mesh(vertices);
+            
+            GL.ClearColor(0.05f, 0.15f, 0.3f, 1.0f);
             
             window.RenderFrame += (w, e) =>
             {
+                GL.Clear(ClearBufferMask.ColorBufferBit);
+
                 mesh.Render();
                 
                 window.SwapBuffers();
@@ -51,14 +55,5 @@ namespace engine
             window.Run();
         }
 
-        private void SetupLogger()
-        {
-            AppDomain.CurrentDomain.UnhandledException += (sender, args) =>
-            {
-                Exception targetException = (Exception) args.ExceptionObject;
-                
-                Logger.Log(Level.Error, "An unhandled exception has been thrown.", targetException);
-            };
-        }
     }
 }

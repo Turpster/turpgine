@@ -17,7 +17,11 @@ namespace Engine.GlException
                 exceptionErrorMessage.Append($"OpenGL Message: {glErrorMessage}");
             }
 
+            Console.WriteLine(exceptionErrorMessage);
+            
             Message = exceptionErrorMessage.ToString();
+            
+            
         }
         
         public GlException(string cause) : base(cause, null) {}

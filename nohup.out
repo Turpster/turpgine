@@ -1,0 +1,8 @@
+Debug | com.jetbrains.rd.util.threading.ByteBufferAsyncProcessor | 12:Idea Main Thread | Pausing, reason=Disconnected, state=Initialized 
+Debug | com.jetbrains.rd.framework.SocketWire.Server | 29:EarlyStartServerWire | EarlyStartServerWire: listening /127.0.0.1:36185 
+Installation home directory: file:////home/turpster/.local/share/JetBrains/Toolbox/apps/Rider/ch-0/192.5308.630
+System directory: file:////home/turpster/.Rider2019.2/system
+Config directory: file:////home/turpster/.Rider2019.2/config
+Log directory: file:////home/turpster/.Rider2019.2/system/log
+
+Following output will be written to a log file /home/turpster/.Rider2019.2/system/log/frontend.log

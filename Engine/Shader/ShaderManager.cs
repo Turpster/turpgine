@@ -1,106 +1,134 @@
-using System;
+using System.Text;
 using Engine.GlException;
 using OpenTK.Graphics.OpenGL;
+using ErrorCode = OpenTK.Graphics.OpenGL4.ErrorCode;
 
 namespace Engine.Shader
 {
     public class ShaderManager
     {
         private int GlProgram;
-        
-        public ShaderManager()
+
+        public ShaderManager(Shader? vertexShader=null, Shader? fragmentShader=null)
         {
-            GlProgram = GL.CreateProgram();
+            if (vertexShader.HasValue)
+            {
+                VertexShader = vertexShader;
+            }
+
+            if (fragmentShader.HasValue)
+            {
+                FragmentShader = fragmentShader;
+            }
+
+            Load();
         }
+
+        public Shader?[] Shaders { get; } = new Shader?[ShaderIndex.Num];
+
+        public Shader? VertexShader
+        {
+            get => Shaders[ShaderIndex.Vertex.Value];
+            set
+            {
+                var vertIndex = ShaderIndex.Vertex.Value;
+                
+                Shaders[vertIndex] = value;
+                
+                Reload();
+            }
+        }
+
+        public Shader? FragmentShader
+        {
+            get => Shaders[ShaderIndex.Fragment.Value];
+            set
+            {
+                var fragIndex = ShaderIndex.Fragment.Value;
+                
+                Shaders[fragIndex] = value;
+                
+                Reload();
+            }
+        }
+
+        ~ShaderManager()
+        {
+            Unload();
+        }
+
 
         public void Use()
         {
             GL.UseProgram(GlProgram);
         }
-        
-        public void AddShader(Shader shader)
+
+        public bool ContainsShader(Shader glShader)
         {
-            if (ContainsShader(shader))
+            foreach (var shader in Shaders)
             {
-                throw new GlShaderAttachException("Shader has already been attached.");
-            }
-            GL.AttachShader(GlProgram, shader.GlShader);
-        }
+                if (shader == null) continue;
 
-        private void Unload()
-        {
-            GL.DeleteProgram(GlProgram);
-            
-        }
-
-        private void Link()
-        {
-            GL.LinkProgram(GlProgram);
-            GL.GetProgram(GlProgram, ProgramParameter.LinkStatus, out int linkStatus);
-            if (linkStatus != 0)
-            {
-                throw new GlProgramLinkException(GL.GetProgramInfoLog(GlProgram));
-            }
-        }
-
-        private void Validate()
-        {
-            GL.ValidateProgram(GlProgram);
-            GL.GetProgram(GlProgram, ProgramParameter.ValidateStatus, out int validateStatus);
-            if (validateStatus != 0)
-            {
-                throw new GlProgramValidateException(GL.GetProgramInfoLog(GlProgram));
-            }
-        }
-
-        private void Load(int[] baseShaders=null)
-        {
-            GlProgram = GL.CreateProgram();
-
-            if (baseShaders != null)
-            {
-                foreach (int shader in baseShaders)
-                {
-                    GL.AttachShader(GlProgram, shader);
-                    GL.LinkProgram(GlProgram);
-                    GL.ValidateProgram(GlProgram);
-                }
-            }
-        }
-
-        public void Reload()
-        {
-            int[] attachedShaders = GlAttachedShaders;
-            Unload();
-            Load(attachedShaders);
-        }
-        
-        public void RemoveShader(Shader shader)
-        {
-            GL.DetachShader(GlProgram, shader.GlShader);
-            Reload();
-        }
-
-        public bool ContainsShader(Shader shader)
-        {
-            foreach (var attachedShader in GlAttachedShaders)
-            {
-                if (attachedShader == shader.GlShader)
-                {
-                    return true;
-                }
+                if (shader.Value.GlShader == glShader.GlShader) return true;
             }
 
             return false;
         }
 
-        public int[] GlAttachedShaders
+        private void Unload()
         {
-            get
+            GL.DeleteProgram(GlProgram);
+        }
+
+        private void Link()
+        {
+            GL.LinkProgram(GlProgram);
+            GL.GetProgram(GlProgram, ProgramParameter.LinkStatus, out var linkStatus);
+            if (linkStatus != 0) throw new GlProgramLinkException(GL.GetProgramInfoLog(GlProgram));
+        }
+
+        private void Validate()
+        {
+            GL.ValidateProgram(GlProgram);
+            GL.GetProgram(GlProgram, ProgramParameter.ValidateStatus, out var validateStatus);
+            if (validateStatus != 0) throw new GlProgramValidateException(GL.GetProgramInfoLog(GlProgram));
+        }
+
+        private void Load()
+        {
+            GlProgram = GL.CreateProgram();
+            
+            foreach (var shader in Shaders)
+                if (shader.HasValue)
+                    GL.AttachShader(GlProgram, shader.Value.GlShader);
+            
+            Link();
+            Validate();
+        }
+
+        public void Reload()
+        {
+            Unload();
+            Load();
+        }
+
+        private class ShaderIndex
+        {
+            public static readonly ShaderIndex
+                Vertex = new ShaderIndex(0, OpenTK.Graphics.OpenGL.ShaderType.VertexShader),
+                Fragment = new ShaderIndex(1, OpenTK.Graphics.OpenGL.ShaderType.FragmentShader);
+
+            public static int Num;
+            public readonly ShaderType? ShaderType;
+
+            public readonly int Value;
+
+            public ShaderIndex(int value, ShaderType shaderType)
             {
-                int[] currentAttachedShaders = new int[2];
-                GL.GetAttachedShaders(GlProgram,0, out int shaderCount, currentAttachedShaders); // 2 might need to change
-                return currentAttachedShaders;
+                Value = value;
+                ShaderType = shaderType;
+
+                Num++;
             }
         }
     }

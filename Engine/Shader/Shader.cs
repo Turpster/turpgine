@@ -2,6 +2,7 @@ using System;
 using System.IO;
 using System.Text;
 using Engine.GlException;
+
 using OpenTK.Graphics.OpenGL4;
 
 namespace Engine.Shader
@@ -15,10 +16,17 @@ namespace Engine.Shader
             get
             {
                 StringBuilder source = new StringBuilder();
-                GL.GetShaderSource(GlShader, 1, out _, source);
+                GL.GetShaderSource(GlShader, 1, out int length, source);
                 return source.ToString();
             }
-            set => GL.ShaderSource(GlShader, value);
+            set
+            {
+                GL.DeleteShader(GlShader);
+                
+                GL.ShaderSource(GlShader, value);
+                
+                Compile();
+            }
         }
         
         public readonly ShaderType ShaderType;
@@ -30,8 +38,6 @@ namespace Engine.Shader
             GlShader = GL.CreateShader(shaderType);
             
             ShaderSource = shaderSource;
-            
-            Compile();
         }
 
         public Shader(Uri shaderSourceFile, ShaderType shaderType) : this(File.ReadAllText(shaderSourceFile.ToString()), shaderType) {}
@@ -41,10 +47,20 @@ namespace Engine.Shader
             GL.CompileShader(GlShader);
             
             GL.GetShader(GlShader, ShaderParameter.CompileStatus, out int glShaderCompileStatus);
-            if (glShaderCompileStatus != 0)
+            if (glShaderCompileStatus == 0)
             {
                 throw new GlShaderCompileException(GlShader);
             }
+        }
+
+        public static bool operator==(Shader shader, Shader targetShader)
+        {
+            return shader.GlShader == targetShader.GlShader;
+        }
+        
+        public static bool operator!=(Shader shader, Shader targetShader)
+        {
+            return !(shader == targetShader);
         }
     }
 }
