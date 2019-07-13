@@ -4,6 +4,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Engine", "Engine\Engine.csp
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tests", "Tests\Tests.csproj", "{04BAF0D7-89C1-4BC4-BCA6-0AB6947B91B1}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Logger", "Logger\Logger.csproj", "{A14CFFD8-BA99-48DD-8AFC-FC5B52249945}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -18,5 +20,9 @@ Global
 		{04BAF0D7-89C1-4BC4-BCA6-0AB6947B91B1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{04BAF0D7-89C1-4BC4-BCA6-0AB6947B91B1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{04BAF0D7-89C1-4BC4-BCA6-0AB6947B91B1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A14CFFD8-BA99-48DD-8AFC-FC5B52249945}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A14CFFD8-BA99-48DD-8AFC-FC5B52249945}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A14CFFD8-BA99-48DD-8AFC-FC5B52249945}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A14CFFD8-BA99-48DD-8AFC-FC5B52249945}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
