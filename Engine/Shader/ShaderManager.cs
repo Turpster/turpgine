@@ -1,4 +1,6 @@
+using System.Reflection;
 using System.Text;
+using Common;
 using Engine.GlException;
 using OpenTK.Graphics.OpenGL;
 
@@ -20,6 +22,24 @@ namespace Engine.Shader
                 FragmentShader = fragmentShader;
             }
 
+            Load();
+        }
+
+        public ShaderManager()
+        {
+            Assembly assembly = Assembly.GetExecutingAssembly();
+
+            VertexShader =
+                new Shader(
+                    StreamUtil.ReadStringStream(
+                        assembly.GetManifestResourceStream("Engine.Shader.GLSL.vertex-shader.vert")),
+                    "vertex-shader.vert", OpenTK.Graphics.OpenGL4.ShaderType.VertexShader);
+            FragmentShader =
+                new Shader(
+                    StreamUtil.ReadStringStream(
+                        assembly.GetManifestResourceStream("Engine.Shader.GLSL.fragment-shader.frag")),
+                    "fragment-shader.frag", OpenTK.Graphics.OpenGL4.ShaderType.FragmentShader);
+            
             Load();
         }
 

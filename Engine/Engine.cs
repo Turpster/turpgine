@@ -34,13 +34,8 @@ namespace engine
             window = new GameWindow(600, 600, null, "Hello World");
             
             GraphicsContext.CurrentContext.ErrorChecking = true;
-
-            Assembly assembly = Assembly.GetExecutingAssembly();
-
-            ShaderManager shaderManager = new ShaderManager( 
-                new Shader(StreamUtil.ReadStringStream(assembly.GetManifestResourceStream("Engine.Shader.GLSL.vertex-shader.vert")), "vertex-shader.vert", ShaderType.VertexShader),
-                new Shader(StreamUtil.ReadStringStream(assembly.GetManifestResourceStream("Engine.Shader.GLSL.fragment-shader.frag")), "fragment-shader.frag", ShaderType.FragmentShader)
-            );
+            
+            ShaderManager shaderManager = new ShaderManager();
             
             shaderManager.Use();
 
