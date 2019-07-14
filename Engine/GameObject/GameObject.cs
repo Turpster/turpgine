@@ -1,10 +1,10 @@
-namespace Engine.Entity
+namespace Engine.GameObject
 {
-    public class Entity
+    public class GameObject
     {
         private Mesh Mesh;
 
-        public Entity(Mesh mesh)
+        public GameObject(Mesh mesh)
         {
             Mesh = mesh;
         }

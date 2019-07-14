@@ -1,9 +1,6 @@
 using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Reflection;
-using Common;
-using Engine.Entity;
+using Engine.GameObject;
 using Engine.Shader;
 using Logger;
 using OpenTK;

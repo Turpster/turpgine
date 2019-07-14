@@ -4,7 +4,7 @@ using System.Runtime.InteropServices;
 using OpenTK;
 using OpenTK.Graphics.OpenGL;
 
-namespace Engine.Entity
+namespace Engine.GameObject
 {
     public class Mesh
     {
