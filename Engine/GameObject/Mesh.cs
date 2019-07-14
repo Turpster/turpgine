@@ -23,7 +23,6 @@ namespace Engine.GameObject
             NumVertices = vertices.Count;
             
             GL.GenVertexArrays(1, out GlVao);
-            GL.GenVertexArrays(1, GlBuffers);
 
             Vector3[] positions = new Vector3[vertices.Count];
 
