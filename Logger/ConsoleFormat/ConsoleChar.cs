@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Logger.Color
+namespace Logger.ConsoleFormat
 {
     public abstract class ConsoleChar
     {
@@ -24,7 +24,8 @@ namespace Logger.Color
         
         public static void FormattedConsoleWrite(string formattedMessage)
         {
-            for (var i = 0; i < formattedMessage.Length - 1; i++) // TODO last two characters
+            int i = 0;
+            for (; i < formattedMessage.Length - 1; i++) // TODO last two characters
             {
                 if (formattedMessage[i] == Prefix)
                 {
@@ -33,11 +34,17 @@ namespace Logger.Color
                         i++;
                         
                         ConsoleChars[formattedMessage[i]].ForegroundExecute();
+                        continue;
                     }
                 }
+                Console.Write(formattedMessage[i]);
+                
             }
 
-            Console.Write(formattedMessage[formattedMessage.Length - 1]);
+            if (i != formattedMessage.Length)
+            {
+                Console.Write(formattedMessage[formattedMessage.Length - 1]);
+            }
         }
 
         public static string Strip(string formattedMessage)
@@ -72,5 +79,10 @@ namespace Logger.Color
 
         public abstract void ForegroundExecute();
         public abstract void BackgroundExecute();
+        
+        public void Values()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

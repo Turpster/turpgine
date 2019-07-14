@@ -1,7 +1,6 @@
 using System.Text;
 using Engine.GlException;
 using OpenTK.Graphics.OpenGL;
-using ErrorCode = OpenTK.Graphics.OpenGL4.ErrorCode;
 
 namespace Engine.Shader
 {
@@ -83,15 +82,15 @@ namespace Engine.Shader
         private void Link()
         {
             GL.LinkProgram(GlProgram);
-            GL.GetProgram(GlProgram, ProgramParameter.LinkStatus, out var linkStatus);
-            if (linkStatus != 0) throw new GlProgramLinkException(GL.GetProgramInfoLog(GlProgram));
+            GL.GetProgram(GlProgram, GetProgramParameterName.LinkStatus, out var linkStatus);
+            if (linkStatus != 1) throw new GlProgramLinkException(GL.GetProgramInfoLog(GlProgram));
         }
 
         private void Validate()
         {
             GL.ValidateProgram(GlProgram);
-            GL.GetProgram(GlProgram, ProgramParameter.ValidateStatus, out var validateStatus);
-            if (validateStatus != 0) throw new GlProgramValidateException(GL.GetProgramInfoLog(GlProgram));
+            GL.GetProgram(GlProgram, GetProgramParameterName.ValidateStatus, out var validateStatus);
+            if (validateStatus != 1) throw new GlProgramValidateException(GL.GetProgramInfoLog(GlProgram));
         }
 
         private void Load()

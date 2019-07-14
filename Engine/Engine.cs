@@ -1,12 +1,15 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Reflection;
+using Common;
 using Engine.Entity;
 using Engine.Shader;
+using Logger;
 using OpenTK;
 using OpenTK.Graphics;
 using OpenTK.Graphics.OpenGL;
 using ShaderType = OpenTK.Graphics.OpenGL4.ShaderType;
-using LoggerLite;
 
 namespace engine
 {
@@ -16,26 +19,38 @@ namespace engine
         
         public GameWindow window;
 
+        private Logger.Logger logger = new Logger.Logger(
+            #if DEBUG
+            Level.Debug
+            #else
+            Level.Severe
+            #endif
+            );
+        
         public Engine()
         {
+            SetupLogger();
+            
             window = new GameWindow(600, 600, null, "Hello World");
             
             GraphicsContext.CurrentContext.ErrorChecking = true;
-            
+
+            Assembly assembly = Assembly.GetExecutingAssembly();
+
             ShaderManager shaderManager = new ShaderManager( 
-                
-                new Shader("/home/turpster/Develop/Git/open-gl/Engine/Shader/GLSL/vertex-shader.vert", ShaderType.VertexShader),
-                new Shader("/home/turpster/Develop/Git/open-gl/Engine/Shader/GLSL/fragment-shader.frag", ShaderType.FragmentShader)
-                
-                );
+                new Shader(StreamUtil.ReadStringStream(assembly.GetManifestResourceStream("Engine.Shader.GLSL.vertex-shader.vert")), "vertex-shader.vert", ShaderType.VertexShader),
+                new Shader(StreamUtil.ReadStringStream(assembly.GetManifestResourceStream("Engine.Shader.GLSL.fragment-shader.frag")), "fragment-shader.frag", ShaderType.FragmentShader)
+            );
             
             shaderManager.Use();
-            
-            List<Vertex> vertices = new List<Vertex>();
-            
-            vertices.Add(new Vertex(new Vector3(0.5f, -0.5f, 1.0f)));
-            vertices.Add(new Vertex(new Vector3(0.0f, 0.5f, 1.0f)));
-            vertices.Add(new Vertex(new Vector3(-0.5f, -0.5f, 1.0f)));
+
+            List<Vertex> vertices = new List<Vertex>
+            {
+                new Vertex(new Vector3(0.5f, -0.5f, 1.0f)),
+                new Vertex(new Vector3(0.0f, 0.5f, 1.0f)),
+                new Vertex(new Vector3(-0.5f, -0.5f, 1.0f))
+            };
+
 
             Mesh mesh = new Mesh(vertices);
             
@@ -54,6 +69,24 @@ namespace engine
                 
             window.Run();
         }
+        
+        private void SetupLogger()
+        {
+            logger.AddOutput(Console.Out);
+            logger.Log(Level.Debug, "This is a debug test.");
+            
+            AppDomain.CurrentDomain.UnhandledException += (sender, args) =>
+            {
+                Exception targetException = (Exception) args.ExceptionObject;
 
+                logger.Log(Level.Error, "An unhandled exception has been thrown.", targetException);
+
+                if (args.IsTerminating)
+                {
+                    logger.Log(Level.Severe, "Program terminated by " + targetException.GetType().Name + ".");
+                }
+                
+            };
+        }
     }
 }

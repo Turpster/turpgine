@@ -5,7 +5,16 @@
         <RootNamespace>Engine</RootNamespace>
     </PropertyGroup>
     <ItemGroup>
-        <PackageReference Include="LoggerLite" Version="3.1.0" />
         <PackageReference Include="OpenTK.NETCore" Version="1.1.2749.6433" />
+    </ItemGroup>
+    <ItemGroup>
+      <ProjectReference Include="..\Common\Common.csproj" />
+      <ProjectReference Include="..\Logger\Logger.csproj" />
+    </ItemGroup>
+    <ItemGroup>
+      <None Remove="Shader\GLSL\fragment-shader.frag" />
+      <EmbeddedResource Include="Shader\GLSL\fragment-shader.frag" />
+      <None Remove="Shader\GLSL\vertex-shader.vert" />
+      <EmbeddedResource Include="Shader\GLSL\vertex-shader.vert" />
     </ItemGroup>
 </Project>

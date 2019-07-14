@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using Logger.Color;
+using System.Text;
+using Logger.ConsoleFormat;
 
 namespace Logger
 {
@@ -31,21 +32,43 @@ namespace Logger
         
         public void Log(Level level, string message, Exception exception = null)
         {
-            message += ConsoleActionChar.Reset;
-            
-            if (level.Priority > Priority) {
+            if (level.Priority < Priority) {
                 return;
+            }
+
+            StringBuilder _message = new StringBuilder();
+            
+            _message.Append(ConsoleAction.Reset + "[" + ConsoleColour.GetConsoleColour(level.Color) + level.Name + ConsoleAction.Reset + "]: " + message);
+
+/*
+ *            TODO Disable Default Unhandled Exception handler that outputs exception to console.
+ * 
+ *            if (exception != null)
+ *            {
+ *                Console.WriteLine(exception.GetType());
+ *                _message.Append(ConsoleColour.Red + "\n" + exception.Message + "\n" + exception.StackTrace);
+ *            }
+ *            
+ */
+
+            if (exception != null)
+            {
+                _message.Append(ConsoleColour.Red);
+            }
+            else
+            {
+                _message.Append(ConsoleAction.Reset);
             }
             
             foreach (var output in _output)
             {
                 if (output == Console.Out)
                 {
-                    ConsoleChar.FormattedConsoleWriteLine(message);
+                    ConsoleChar.FormattedConsoleWriteLine(_message.ToString());
                 }
                 else
                 {
-                    output.Write(ConsoleChar.Strip(message));
+                    output.Write(ConsoleChar.Strip(_message.ToString()));
                 }
             }
         }

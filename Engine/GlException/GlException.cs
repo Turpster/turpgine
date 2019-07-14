@@ -5,25 +5,20 @@ namespace Engine.GlException
 {
     public class GlException : Exception
     {
-        public override string Message { get; }
+        public GlException(string cause, string glErrorMessage=null) : base(GetErrorMessage(cause, glErrorMessage))
+        { }
 
-        public GlException(string cause, string glErrorMessage)
+        private static string GetErrorMessage(string cause, string glErrorMessage)
         {
             StringBuilder exceptionErrorMessage = new StringBuilder("There was an exception caused by OpenGL.\n" +
-                                                                    $"OpenGL Cause: {cause}\n");
+                                                                    "OpenGL Cause: " + cause + "\n");
 
             if (glErrorMessage != null)
             {
-                exceptionErrorMessage.Append($"OpenGL Message: {glErrorMessage}");
+                exceptionErrorMessage.Append($"OpenGL Message: {glErrorMessage}\n");
             }
 
-            Console.WriteLine(exceptionErrorMessage);
-            
-            Message = exceptionErrorMessage.ToString();
-            
-            
+            return exceptionErrorMessage.ToString();
         }
-        
-        public GlException(string cause) : base(cause, null) {}
     }
 }

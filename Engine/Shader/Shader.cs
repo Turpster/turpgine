@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using System.Reflection;
 using System.Text;
 using Engine.GlException;
 
@@ -11,6 +12,8 @@ namespace Engine.Shader
     {
         public readonly int GlShader;
 
+        private string _fileName;
+        
         public string ShaderSource
         {
             get
@@ -31,25 +34,27 @@ namespace Engine.Shader
         
         public readonly ShaderType ShaderType;
 
-        public Shader(string shaderSource, ShaderType shaderType)
+        public Shader(string shaderSource, string fileName, ShaderType shaderType)
         {
+            _fileName = fileName;
+            
             ShaderType = shaderType;    
             
             GlShader = GL.CreateShader(shaderType);
+
+            GL.ShaderSource(GlShader, shaderSource);
             
-            ShaderSource = shaderSource;
+            Compile();
         }
-
-        public Shader(Uri shaderSourceFile, ShaderType shaderType) : this(File.ReadAllText(shaderSourceFile.ToString()), shaderType) {}
-
+        
         private void Compile()
         {
             GL.CompileShader(GlShader);
             
             GL.GetShader(GlShader, ShaderParameter.CompileStatus, out int glShaderCompileStatus);
-            if (glShaderCompileStatus == 0)
+            if (glShaderCompileStatus != 1)
             {
-                throw new GlShaderCompileException(GlShader);
+                throw new GlShaderCompileException(GlShader, _fileName);
             }
         }
 
