@@ -5,11 +5,8 @@ namespace Logger.ConsoleFormat
 {
     public class ConsoleAction : ConsoleChar
     {
-        public static List<ConsoleAction> Values => _values;
-        private static List<ConsoleAction> _values = new List<ConsoleAction>();
-        
         public static readonly ConsoleAction
-            Reset = new ConsoleAction('r', (isForeground) =>
+            Reset = new ConsoleAction('r', isForeground =>
             {
                 if (isForeground)
                     Console.ForegroundColor = ConsoleColor.White;
@@ -19,17 +16,26 @@ namespace Logger.ConsoleFormat
 
         private readonly Action<bool> _action;
 
+        private ConsoleAction(char character, Action<bool> action) : base(character)
+        {
+            _action = action;
+        }
+
+        public static List<ConsoleAction> Values { get; } = new List<ConsoleAction>();
+
         public override string ToString()
         {
             return Prefix.ToString() + Char;
         }
 
-        public ConsoleAction(char character, Action<bool> action) : base(character)
+        public override void ForegroundExecute()
         {
-            _action = action;
+            _action(true);
         }
 
-        public override void ForegroundExecute() => _action(true);
-        public override void BackgroundExecute() => _action(false);
+        public override void BackgroundExecute()
+        {
+            _action(false);
+        }
     }
 }

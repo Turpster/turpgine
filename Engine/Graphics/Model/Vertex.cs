@@ -1,6 +1,6 @@
 using OpenTK;
 
-namespace Engine.GameObject
+namespace Engine.Graphics.Model
 {
     public struct Vertex
     {

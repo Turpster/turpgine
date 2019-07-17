@@ -4,44 +4,33 @@ using System.Runtime.InteropServices;
 using OpenTK;
 using OpenTK.Graphics.OpenGL;
 
-namespace Engine.GameObject._3D
+namespace Engine.Graphics.Model._3D
 {
     public class Mesh3D
     {
-        enum VertexBuffer
-        {
-            Pos=0
-        }
-        
-        public uint GlVao;
-        public uint[] GlBuffers;
+        public readonly uint[] GlBuffers;
 
-        public int NumVertices;
+        public readonly uint GlVao;
+
+        public readonly int NumVertices;
 
         public Mesh3D(List<Vertex> vertices)
         {
             NumVertices = vertices.Count;
-            
+
+            var positions = new Vector3[vertices.Count];
+            for (var i = 0; i < vertices.Count; i++) positions[i] = vertices[i].Position;
+
             GL.GenVertexArrays(1, out GlVao);
-
-            Vector3[] positions = new Vector3[vertices.Count];
-
-            for (int i = 0; i < vertices.Count; i++)
-            {    
-                positions[i] = vertices[i].Position;
-            }
-            
             GL.BindVertexArray(GlVao);
 
-            int bufferLength = Enum.GetNames(typeof(VertexBuffer)).Length;
-
+            var bufferLength = Enum.GetNames(typeof(VertexBuffer)).Length;
             GlBuffers = new uint[bufferLength];
-            
             GL.GenBuffers(bufferLength, GlBuffers);
-            
+
             GL.BindBuffer(BufferTarget.ArrayBuffer, GlBuffers[(int) VertexBuffer.Pos]);
-            
-            GL.BufferData(BufferTarget.ArrayBuffer,  Marshal.SizeOf( typeof(Vertex)) * vertices.Count,  ref positions[0], BufferUsageHint.StaticDraw);
+            GL.BufferData(BufferTarget.ArrayBuffer, Marshal.SizeOf(typeof(Vertex)) * vertices.Count, ref positions[0],
+                BufferUsageHint.StaticDraw);
             GL.EnableVertexAttribArray((int) VertexBuffer.Pos);
             GL.VertexAttribPointer((int) VertexBuffer.Pos, 3, VertexAttribPointerType.Float, false, 0, 0);
 
@@ -53,6 +42,48 @@ namespace Engine.GameObject._3D
             GL.BindVertexArray(GlVao);
             GL.DrawArrays(PrimitiveType.Triangles, 0, NumVertices);
             GL.BindVertexArray(0);
+        }
+
+        protected bool Equals(Mesh3D other)
+        {
+            return Equals(GlBuffers, other.GlBuffers) && GlVao == other.GlVao && NumVertices == other.NumVertices;
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (ReferenceEquals(null, obj)) return false;
+            if (ReferenceEquals(this, obj)) return true;
+            if (obj.GetType() != GetType()) return false;
+            return Equals((Mesh3D) obj);
+        }
+
+        public override int GetHashCode()
+        {
+            unchecked
+            {
+                var hashCode = GlBuffers != null ? GlBuffers.GetHashCode() : 0;
+                hashCode = (hashCode * 397) ^ (int) GlVao;
+                hashCode = (hashCode * 397) ^ NumVertices;
+                return hashCode;
+            }
+        }
+
+        public static bool operator ==(Mesh3D mesh3D, Mesh3D targetMesh3D)
+        {
+            if (mesh3D == null || targetMesh3D == null)
+                return false;
+
+            return mesh3D.GlVao == targetMesh3D.GlVao;
+        }
+
+        public static bool operator !=(Mesh3D mesh3D, Mesh3D targetMesh3D)
+        {
+            return !(mesh3D == targetMesh3D);
+        }
+
+        private enum VertexBuffer
+        {
+            Pos = 0
         }
     }
 }

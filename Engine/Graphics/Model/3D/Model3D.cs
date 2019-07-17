@@ -1,9 +1,9 @@
-namespace Engine.GameObject._3D
+namespace Engine.Graphics.Model._3D
 {
     public class Model3D : Model
     {
-        private Mesh3D _mesh;
-        
+        private readonly Mesh3D _mesh;
+
         public Model3D(ModelManager modelManager, Mesh3D mesh) : base(modelManager)
         {
             _mesh = mesh;

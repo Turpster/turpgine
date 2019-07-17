@@ -1,9 +1,11 @@
-namespace Engine.GlException
+namespace Engine.Graphics.GlException
 {
     public class GlProgramValidateException : GlException
     {
-        public override string Message { get; }
+        public GlProgramValidateException(string glErrorMessage) : base("Linking a program", glErrorMessage)
+        {
+        }
 
-        public GlProgramValidateException(string glErrorMessage) : base("Linking a program", glErrorMessage) { }
+        public override string Message { get; }
     }
 }

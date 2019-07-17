@@ -1,32 +1,29 @@
-using System;
 using System.Collections.Generic;
-using engine;
 
-namespace Engine.GameObject
+namespace Engine.Graphics.Model
 {
     public class ModelManager : IRenderable
     {
         // <GameModel Hash, GameObject>
-        private Dictionary<int, Model> _gameObjects { get; } = new Dictionary<int, Model>();
+        // TODO Current implementation of GetHashCode is not completely unique.
+        private Dictionary<int, Model> _gameModels { get; } = new Dictionary<int, Model>();
 
-        Dictionary<int, Model>.ValueCollection GameObjects => _gameObjects.Values;
-        
+        public Dictionary<int, Model>.ValueCollection GameModels => _gameModels.Values;
+
         public void Render()
+        
         {
-            foreach (var gameObject in GameObjects)
-            {
-                gameObject.Render();
-            }
+            foreach (var gameObject in GameModels) gameObject.Render();
         }
 
         public void Add(Model model)
         {
-            _gameObjects.Add(model.GetHashCode(), model);
+            _gameModels.Add(model.GetHashCode(), model);
         }
 
         public void Remove(Model model)
         {
-            _gameObjects.Remove(model.GetHashCode());
+            _gameModels.Remove(model.GetHashCode());
         }
     }
 }

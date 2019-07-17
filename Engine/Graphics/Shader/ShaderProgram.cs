@@ -1,45 +1,38 @@
 using System.Reflection;
-using System.Text;
 using Common;
-using Engine.GlException;
+using Engine.Graphics.GlException;
 using OpenTK.Graphics.OpenGL;
 
-namespace Engine.Shader
+namespace Engine.Graphics.Shader
 {
     public class ShaderProgram
     {
         private int GlProgram;
 
-        public ShaderProgram(Shader? vertexShader=null, Shader? fragmentShader=null)
+        public ShaderProgram(Shader? vertexShader = null, Shader? fragmentShader = null)
         {
-            if (vertexShader.HasValue)
-            {
-                VertexShader = vertexShader;
-            }
+            if (vertexShader.HasValue) VertexShader = vertexShader;
 
-            if (fragmentShader.HasValue)
-            {
-                FragmentShader = fragmentShader;
-            }
+            if (fragmentShader.HasValue) FragmentShader = fragmentShader;
 
             Load();
         }
 
         public ShaderProgram()
         {
-            Assembly assembly = Assembly.GetExecutingAssembly();
+            var assembly = Assembly.GetExecutingAssembly();
 
             VertexShader =
                 new Shader(
                     StreamUtil.ReadStringStream(
                         assembly.GetManifestResourceStream("Engine.Shader.GLSL.vertex-shader.vert")),
-                    "vertex-shader.vert", OpenTK.Graphics.OpenGL4.ShaderType.VertexShader);
+                    "vertex-shader.vert", ShaderType.VertexShader);
             FragmentShader =
                 new Shader(
                     StreamUtil.ReadStringStream(
                         assembly.GetManifestResourceStream("Engine.Shader.GLSL.fragment-shader.frag")),
-                    "fragment-shader.frag", OpenTK.Graphics.OpenGL4.ShaderType.FragmentShader);
-            
+                    "fragment-shader.frag", ShaderType.FragmentShader);
+
             Load();
         }
 
@@ -51,9 +44,9 @@ namespace Engine.Shader
             set
             {
                 var vertIndex = ShaderIndex.Vertex.Value;
-                
+
                 Shaders[vertIndex] = value;
-                
+
                 Reload();
             }
         }
@@ -64,9 +57,9 @@ namespace Engine.Shader
             set
             {
                 var fragIndex = ShaderIndex.Fragment.Value;
-                
+
                 Shaders[fragIndex] = value;
-                
+
                 Reload();
             }
         }
@@ -87,8 +80,8 @@ namespace Engine.Shader
             foreach (var shader in Shaders)
             {
                 if (shader == null) continue;
-
-                if (shader.Value.GlShader == glShader.GlShader) return true;
+                
+                if (shader.Value == glShader) return true; 
             }
 
             return false;

@@ -14,22 +14,20 @@ namespace Logger
 
 
         public static int _maxPriority;
-        public static int MaxPriority => _maxPriority;
-        
-        public readonly int Priority;
-        public readonly string Name;
         public readonly ConsoleColor Color;
+        public readonly string Name;
+
+        public readonly int Priority;
 
         public Level(int priority, string name, ConsoleColor color)
         {
-            if (priority <= _maxPriority)
-            {
-                _maxPriority = priority;
-            }
-            
+            if (priority <= _maxPriority) _maxPriority = priority;
+
             Priority = priority;
             Name = name;
             Color = color;
         }
+
+        public static int MaxPriority => _maxPriority;
     }
 }

@@ -1,20 +1,11 @@
-using engine;
-using Engine.GameObject;
+using Engine.Graphics.Model;
 
-namespace Engine.GraphicalInterface
+namespace Engine.Graphics.Interface
 {
     public abstract class GraphicalInterface : IRenderable
     {
-        protected ModelManager ModelManager = new ModelManager();
+        protected readonly ModelManager ModelManager = new ModelManager();
 
-        public GraphicalInterface()
-        {
-            
-        }
-
-        public void Render()
-        {
-            
-        } 
+        public abstract void Render();
     }
 }

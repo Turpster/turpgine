@@ -1,16 +1,19 @@
-using engine;
-using Engine.GameObject._3D;
+using Engine.Graphics.Model._3D;
 
-namespace Engine.GraphicalInterface
+namespace Engine.Graphics.Interface
 {
     public class Space : GraphicalInterface, IRenderable
-    {   
-        public Space()
+    {
+        public override void Render()
         {
-            
         }
-        
+
         public void Add(Model3D obj)
+        {
+            ModelManager.Add(obj);
+        }
+
+        public void Remove(Model3D obj)
         {
             ModelManager.Add(obj);
         }

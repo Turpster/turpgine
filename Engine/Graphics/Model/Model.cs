@@ -1,24 +1,21 @@
-using engine;
-using Engine.GameObject._3D;
-
-namespace Engine.GameObject
+namespace Engine.Graphics.Model
 {
     public abstract class Model : IRenderable
     {
-        private ModelManager _modelManager;
-        
-        public Model(ModelManager modelManager)
+        private readonly ModelManager _modelManager;
+
+        protected Model(ModelManager modelManager)
         {
             _modelManager = modelManager;
-            
+
             _modelManager.Add(this);
         }
+
+        public abstract void Render();
 
         ~Model()
         {
             _modelManager.Remove(this);
         }
-
-        public abstract void Render();
     }
 }

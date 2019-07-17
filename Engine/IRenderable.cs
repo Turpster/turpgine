@@ -1,4 +1,4 @@
-namespace engine
+namespace Engine
 {
     public interface IRenderable
     {

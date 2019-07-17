@@ -6,61 +6,59 @@ namespace Logger.ConsoleFormat
 {
     public abstract class ConsoleChar
     {
-        internal readonly char Char;
-
         public const char Prefix = '&';
 
-        private static Dictionary<char, ConsoleChar> ConsoleChars = new Dictionary<char, ConsoleChar>();
+        private static readonly Dictionary<char, ConsoleChar> ConsoleChars = new Dictionary<char, ConsoleChar>();
+        internal readonly char Char;
 
-        public ConsoleChar(char character)
+        protected ConsoleChar(char character)
         {
             Char = character;
-            
+
             if (!ConsoleChars.ContainsKey(character))
                 ConsoleChars[character] = this;
             else
                 throw new FormatException("Character " + character + " already has a designated Console Char.");
         }
-        
+
         public static void FormattedConsoleWrite(string formattedMessage)
         {
-            int i = 0;
+            var i = 0;
             for (; i < formattedMessage.Length - 1; i++) // TODO last two characters
             {
                 if (formattedMessage[i] == Prefix)
-                {
                     if (ConsoleChars.ContainsKey(formattedMessage[i + 1]))
                     {
                         i++;
-                        
+
                         ConsoleChars[formattedMessage[i]].ForegroundExecute();
                         continue;
                     }
-                }
+
                 Console.Write(formattedMessage[i]);
-                
             }
 
-            if (i != formattedMessage.Length)
-            {
-                Console.Write(formattedMessage[formattedMessage.Length - 1]);
-            }
+            if (i != formattedMessage.Length) Console.Write(formattedMessage[formattedMessage.Length - 1]);
+        }
+
+        public static void FormattedConsoleWriteLine(string formattedMessage)
+        {
+            FormattedConsoleWrite(formattedMessage);
+            Console.Write("\n");
         }
 
         public static string Strip(string formattedMessage)
         {
-            StringBuilder strippedString = new StringBuilder();
-            
+            var strippedString = new StringBuilder();
+
             for (var i = 0; i < formattedMessage.Length - 1; i++) // TODO last two characters
             {
                 if (formattedMessage[i] == Prefix)
-                {
                     if (ConsoleChars.ContainsKey(formattedMessage[i + 1]))
                     {
                         i++;
                         continue;
                     }
-                }
 
                 strippedString.Append(formattedMessage[i]);
             }
@@ -70,16 +68,10 @@ namespace Logger.ConsoleFormat
             return strippedString.ToString();
         }
 
-        public static void FormattedConsoleWriteLine(string formattedMessage)
-        {
-            FormattedConsoleWrite(formattedMessage);
-            Console.Write("\n");
-        }
-        
 
         public abstract void ForegroundExecute();
         public abstract void BackgroundExecute();
-        
+
         public void Values()
         {
             throw new NotImplementedException();

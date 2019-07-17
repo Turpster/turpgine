@@ -5,9 +5,6 @@ namespace Logger.ConsoleFormat
 {
     public class ConsoleColour : ConsoleChar
     {
-        public static List<ConsoleColour> Values => _values;
-        private static List<ConsoleColour> _values = new List<ConsoleColour>();
-        
         public static readonly ConsoleColour
             Black = new ConsoleColour('0', ConsoleColor.Black),
             DarkBlue = new ConsoleColour('1', ConsoleColor.DarkBlue),
@@ -28,39 +25,37 @@ namespace Logger.ConsoleFormat
 
         private readonly ConsoleColor _consoleColor;
 
+        private ConsoleColour(char character, ConsoleColor consoleColor) : base(character)
+        {
+            _consoleColor = consoleColor;
+
+            Values.Add(this);
+        }
+
+        public static List<ConsoleColour> Values { get; } = new List<ConsoleColour>();
+
         public override string ToString()
         {
             return Prefix.ToString() + Char;
         }
 
-        public ConsoleColour(char character, ConsoleColor consoleColor) : base(character)
-        {
-            _consoleColor = consoleColor;
-
-            _values.Add(this);
-        }
-        
         public static ConsoleColour GetConsoleColour(ConsoleColor color)
         {
-            foreach (var consoleColour in _values)
-            {
+            foreach (var consoleColour in Values)
                 if (consoleColour._consoleColor == color)
-                {
                     return consoleColour;
-                }
-            }
 
             return null;
         }
-        
+
         public int[] ToRGB()
         {
-            throw new System.NotImplementedException();
+            throw new NotImplementedException();
         }
 
         public string ToHEX()
         {
-            throw new System.NotImplementedException();
+            throw new NotImplementedException();
         }
 
         public override void ForegroundExecute()
