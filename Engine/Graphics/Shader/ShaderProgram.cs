@@ -6,11 +6,11 @@ using OpenTK.Graphics.OpenGL;
 
 namespace Engine.Shader
 {
-    public class ShaderManager
+    public class ShaderProgram
     {
         private int GlProgram;
 
-        public ShaderManager(Shader? vertexShader=null, Shader? fragmentShader=null)
+        public ShaderProgram(Shader? vertexShader=null, Shader? fragmentShader=null)
         {
             if (vertexShader.HasValue)
             {
@@ -25,7 +25,7 @@ namespace Engine.Shader
             Load();
         }
 
-        public ShaderManager()
+        public ShaderProgram()
         {
             Assembly assembly = Assembly.GetExecutingAssembly();
 
@@ -71,7 +71,7 @@ namespace Engine.Shader
             }
         }
 
-        ~ShaderManager()
+        ~ShaderProgram()
         {
             Unload();
         }

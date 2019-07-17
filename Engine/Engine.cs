@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Engine.GameObject;
+using Engine.GameObject._3D;
 using Engine.Shader;
 using Logger;
 using OpenTK;
@@ -12,70 +13,56 @@ namespace engine
 {
     public class Engine
     {
-        static Engine engine;
-        
-        public GameWindow window;
+        public GameWindow Window;
 
-        private Logger.Logger logger = new Logger.Logger(
+        private Logger.Logger Logger = new Logger.Logger(
             #if DEBUG
             Level.Debug
             #else
             Level.Severe
             #endif
-            );
+        );
         
-        public Engine()
+        public Engine(GameWindow window)
         {
             SetupLogger();
-            
-            window = new GameWindow(600, 600, null, "Hello World");
-            
-            GraphicsContext.CurrentContext.ErrorChecking = true;
-            
-            ShaderManager shaderManager = new ShaderManager();
-            
-            shaderManager.Use();
 
-            List<Vertex> vertices = new List<Vertex>
-            {
-                new Vertex(new Vector3(0.5f, -0.5f, 1.0f)),
-                new Vertex(new Vector3(0.0f, 0.5f, 1.0f)),
-                new Vertex(new Vector3(-0.5f, -0.5f, 1.0f))
-            };
+            Window = window;
 
-
-            Mesh mesh = new Mesh(vertices);
+            ShaderProgram shaderProgram = new ShaderProgram();
             
+            shaderProgram.Use();
+
             GL.ClearColor(0.05f, 0.15f, 0.3f, 1.0f);
             
-            window.RenderFrame += (w, e) =>
+            Window.RenderFrame += (w, e) =>
             {
                 GL.Clear(ClearBufferMask.ColorBufferBit);
-
-                mesh.Render();
                 
-                window.SwapBuffers();
+                Window.SwapBuffers();
                 
-                window.ProcessEvents();
+                Window.ProcessEvents();
             }; 
                 
-            window.Run();
+            Window.Run();
         }
+
+        public Engine(int width = 600, int height = 600, string title = "Open-GL Engine") : this(new GameWindow(width, height, null, title)) {}
         
         private void SetupLogger()
         {
-            logger.AddOutput(Console.Out);
-            logger.Log(Level.Debug, "This is a debug test.");
+            Logger.AddOutput(Console.Out);
+            Logger.Log(Level.Debug, "You may see more logs then expected since Debug mode is on.");
             
             AppDomain.CurrentDomain.UnhandledException += (sender, args) =>
             {
                 Exception targetException = (Exception) args.ExceptionObject;
 
-                logger.Log(Level.Error, "An unhandled exception has been thrown.", targetException);
+                Logger.Log(Level.Error, "An unhandled exception has been thrown.", targetException);
 
                 if (args.IsTerminating)
                 {
-                    logger.Log(Level.Severe, "Program terminated by " + targetException.GetType().Name + ".");
+                    Logger.Log(Level.Severe, "Program terminated by " + targetException.GetType().Name + ".");
                 }
                 
             };

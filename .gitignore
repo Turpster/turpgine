@@ -4,3 +4,6 @@
 # DotNet build files
 bin
 obj
+
+# LibreOffice lock files
+.~lock.*

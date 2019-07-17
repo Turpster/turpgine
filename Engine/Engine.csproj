@@ -13,8 +13,13 @@
     </ItemGroup>
     <ItemGroup>
       <None Remove="Shader\GLSL\fragment-shader.frag" />
-      <EmbeddedResource Include="Shader\GLSL\fragment-shader.frag" />
       <None Remove="Shader\GLSL\vertex-shader.vert" />
-      <EmbeddedResource Include="Shader\GLSL\vertex-shader.vert" />
+    </ItemGroup>
+    <ItemGroup>
+      <Folder Include="Graphics" />
+    </ItemGroup>
+    <ItemGroup>
+      <EmbeddedResource Include="Graphics\Shader\GLSL\fragment-shader.frag" />
+      <EmbeddedResource Include="Graphics\Shader\GLSL\vertex-shader.vert" />
     </ItemGroup>
 </Project>

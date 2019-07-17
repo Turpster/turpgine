@@ -4,9 +4,9 @@ using System.Runtime.InteropServices;
 using OpenTK;
 using OpenTK.Graphics.OpenGL;
 
-namespace Engine.GameObject
+namespace Engine.GameObject._3D
 {
-    public class Mesh
+    public class Mesh3D
     {
         enum VertexBuffer
         {
@@ -18,7 +18,7 @@ namespace Engine.GameObject
 
         public int NumVertices;
 
-        public Mesh(List<Vertex> vertices)
+        public Mesh3D(List<Vertex> vertices)
         {
             NumVertices = vertices.Count;
             
