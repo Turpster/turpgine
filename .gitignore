@@ -7,3 +7,6 @@ obj
 
 # LibreOffice lock files
 .~lock.*
+
+# Visual Code
+.vscode/*
