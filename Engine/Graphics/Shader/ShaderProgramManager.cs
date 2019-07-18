@@ -7,8 +7,10 @@ namespace Engine.Graphics.Shader
 {
     public class ShaderProgramManager
     {
-        private readonly List<ShaderProgram> shaderPrograms = new List<ShaderProgram>();
+        private readonly Dictionary<int, ShaderProgram> _shaderPrograms = new Dictionary<int, ShaderProgram>();
 
+        public Dictionary<int, ShaderProgram>.ValueCollection ShaderPrograms => _shaderPrograms.Values;
+        
         public ShaderProgramManager()
         {
             var assembly = Assembly.GetExecutingAssembly();
@@ -24,12 +26,14 @@ namespace Engine.Graphics.Shader
                         assembly.GetManifestResourceStream("Engine.Shader.GLSL.fragment-shader.frag")),
                     "fragment-shader.frag", ShaderType.FragmentShader);
 
-            shaderPrograms.Add(new ShaderProgram(vertexShader, fragmentShader));
+            ShaderProgram shaderProgram = new ShaderProgram(vertexShader, fragmentShader);
+            
+            _shaderPrograms.Add(shaderProgram.GetHashCode(), shaderProgram);
         }
 
         public void Use(ShaderProgram targetShaderProgram)
         {
-            foreach (var shaderProgram in shaderPrograms)
+            foreach (var shaderProgram in _shaderPrograms)
             {
                 
             }
