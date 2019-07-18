@@ -4,11 +4,11 @@ namespace Engine.Graphics.Model
 {
     public class ModelManager : IRenderable
     {
+        // <GameModel Hash, GameObject>
         // TODO Current implementation of GetHashCode is not completely unique.
-        // Possible fix is to ensure GetHashCode is unique for Model's.
-        private HashSet<Model> _gameModels { get; } = new HashSet<Model>();
+        private Dictionary<int, Model> _gameModels { get; } = new Dictionary<int, Model>();
 
-        public HashSet<Model> GameModels => _gameModels;
+        public Dictionary<int, Model>.ValueCollection GameModels => _gameModels.Values;
 
         public void Render()
         {
@@ -17,12 +17,12 @@ namespace Engine.Graphics.Model
 
         public void Add(Model model)
         {
-            _gameModels.Add(model);
+            _gameModels.Add(model.GetHashCode(), model);
         }
 
         public void Remove(Model model)
         {
-            _gameModels.Remove(model);
+            _gameModels.Remove(model.GetHashCode());
         }
     }
 }
