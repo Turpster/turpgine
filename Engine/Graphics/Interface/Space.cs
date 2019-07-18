@@ -2,20 +2,11 @@ using Engine.Graphics.Model._3D;
 
 namespace Engine.Graphics.Interface
 {
-    public class Space : GraphicalInterface, IRenderable
+    public class Space : GraphicalInterface
     {
-        public override void Render()
+        public Space(GraphicalInterfaceManager graphicalInterfaceManager, string name) : base(graphicalInterfaceManager, name)
         {
-        }
-
-        public void Add(Model3D obj)
-        {
-            ModelManager.Add(obj);
-        }
-
-        public void Remove(Model3D obj)
-        {
-            ModelManager.Add(obj);
+            
         }
     }
 }

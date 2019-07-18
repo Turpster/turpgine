@@ -11,7 +11,6 @@ namespace Engine.Graphics.Model
         public Dictionary<int, Model>.ValueCollection GameModels => _gameModels.Values;
 
         public void Render()
-        
         {
             foreach (var gameObject in GameModels) gameObject.Render();
         }

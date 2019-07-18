@@ -1,4 +1,5 @@
 using System;
+using Engine.Graphics.Interface;
 using Engine.Graphics.Shader;
 using Logger;
 using OpenTK;
@@ -17,23 +18,22 @@ namespace Engine
         );
 
         public GameWindow Window;
-
+        
+        public GraphicalInterfaceManager graphicalInterfaceManager;
+        
         public Engine(GameWindow window)
         {
+
             SetupLogger();
 
             Window = window;
-
-            var shaderProgram = new ShaderProgram();
-
-            shaderProgram.Use();
 
             GL.ClearColor(0.05f, 0.15f, 0.3f, 1.0f);
 
             Window.RenderFrame += (w, e) =>
             {
-                GL.Clear(ClearBufferMask.ColorBufferBit);
-
+                graphicalInterfaceManager.Render();
+                
                 Window.SwapBuffers();
 
                 Window.ProcessEvents();

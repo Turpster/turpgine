@@ -8,30 +8,11 @@ namespace Engine.Graphics.Shader
     public class ShaderProgram
     {
         private int GlProgram;
-
-        public ShaderProgram(Shader? vertexShader = null, Shader? fragmentShader = null)
+        
+        public ShaderProgram(Shader vertexShader, Shader fragmentShader)
         {
-            if (vertexShader.HasValue) VertexShader = vertexShader;
-
-            if (fragmentShader.HasValue) FragmentShader = fragmentShader;
-
-            Load();
-        }
-
-        public ShaderProgram()
-        {
-            var assembly = Assembly.GetExecutingAssembly();
-
-            VertexShader =
-                new Shader(
-                    StreamUtil.ReadStringStream(
-                        assembly.GetManifestResourceStream("Engine.Shader.GLSL.vertex-shader.vert")),
-                    "vertex-shader.vert", ShaderType.VertexShader);
-            FragmentShader =
-                new Shader(
-                    StreamUtil.ReadStringStream(
-                        assembly.GetManifestResourceStream("Engine.Shader.GLSL.fragment-shader.frag")),
-                    "fragment-shader.frag", ShaderType.FragmentShader);
+            VertexShader = vertexShader;
+            FragmentShader = fragmentShader;
 
             Load();
         }
