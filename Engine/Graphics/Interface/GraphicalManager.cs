@@ -28,18 +28,10 @@ namespace Engine.Graphics.Interface
 
         public void Render()
         {
-            var enumerator = _graphicalInterfaces.Values.GetEnumerator();
-            
-            do
+            foreach (var graphicalInterface in GraphicalInterfaces)
             {
-                var graphicalInterface = enumerator.Current;
-
-                if (!graphicalInterface.Hidden)
-                {
-                    graphicalInterface.Render();
-                }
+                graphicalInterface.Value.Render();
             }
-            while (enumerator.MoveNext());
             
             Window.SwapBuffers();
             
