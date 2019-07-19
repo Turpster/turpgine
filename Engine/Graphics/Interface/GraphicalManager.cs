@@ -21,9 +21,6 @@ namespace Engine.Graphics.Interface
             
             GlBackgroundColor(0.05f, 0.15f, 0.3f, 1.0f);
 
-            Engine.Logger.Log(Level.Debug, "Adding RenderFrame method " + this.GetHashCode() + ".");
-            Window.RenderFrame += Render;
-            
             Thread thread = new Thread(Run);
             thread.Start();
         }
@@ -31,12 +28,24 @@ namespace Engine.Graphics.Interface
         public void Run()
         {
             Window = new GameWindow(Window.Width, Window.Height, null, Window.Title);
-            
+
+            Engine.Logger.Log(Level.Debug, "Adding RenderFrame method " + this.GetHashCode() + ".");
+            Window.RenderFrame += Render;
+
+            GlBackgroundColor(0.05f, 0.15f, 0.3f, 1.0f);
+
+            foreach (var graphicalInterface in GraphicalInterfaces)
+            {
+                graphicalInterface.Value.GlInit();
+            }
+
             Window.Run();
         }
         
         public void Render()
         {
+            GL.Clear(ClearBufferMask.ColorBufferBit);
+            
             foreach (var graphicalInterface in GraphicalInterfaces)
             {
                 graphicalInterface.Value.Render();

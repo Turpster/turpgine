@@ -21,6 +21,11 @@ namespace Engine.Graphics.Model
             foreach (var gameObject in GameModels) gameObject.Render();
         }
 
+        public void GlInit()
+        {
+            foreach (var gameObject in GameModels) gameObject.GlInit();
+        }
+
         protected internal void Add(Model model)
         {
             _gameModels.Add(model.GetHashCode(), model);

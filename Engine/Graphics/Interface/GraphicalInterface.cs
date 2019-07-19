@@ -32,6 +32,11 @@ namespace Engine.Graphics.Interface
             _graphicalManager._graphicalInterfaces.Remove(Name);
         }
 
+        public void GlInit()
+        {
+            ModelManager.GlInit();
+        }
+        
         public void Render()
         {
             foreach (var model in ModelManager.GameModels)

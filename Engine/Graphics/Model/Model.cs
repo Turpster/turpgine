@@ -4,10 +4,14 @@ namespace Engine.Graphics.Model
     {
         private readonly ModelManager _modelManager;
 
-        protected Model(ModelManager modelManager)
+        protected Mesh _mesh;
+        
+        protected Model(ModelManager modelManager, Mesh mesh)
         {
             _modelManager = modelManager;
 
+            _mesh = mesh;
+            
             _modelManager.Add(this);
         }
 
@@ -16,6 +20,11 @@ namespace Engine.Graphics.Model
         ~Model()
         {
             _modelManager.Remove(this);
+        }
+
+        public void GlInit()
+        {
+            _mesh.GlInit();
         }
     }
 }
