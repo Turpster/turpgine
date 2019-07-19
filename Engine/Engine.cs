@@ -17,29 +17,18 @@ namespace Engine
             #endif
         );
 
-        public GameWindow Window;
+        public readonly GameWindow Window;
         
-        public GraphicalInterfaceManager graphicalInterfaceManager;
+        public readonly GraphicalInterfaceManager GraphicalInterfaceManager;
+        public readonly ShaderProgramManager ShaderProgramManager;
         
         public Engine(GameWindow window)
         {
-
             SetupLogger();
-
+            
             Window = window;
-
-            GL.ClearColor(0.05f, 0.15f, 0.3f, 1.0f);
-
-            Window.RenderFrame += (w, e) =>
-            {
-                graphicalInterfaceManager.Render();
-                
-                Window.SwapBuffers();
-
-                Window.ProcessEvents();
-            };
-
-            Window.Run();
+            ShaderProgramManager = new ShaderProgramManager();
+            GraphicalInterfaceManager = new GraphicalInterfaceManager(Window);
         }
 
         public Engine(int width = 600, int height = 600, string title = "Open-GL Engine") : this(new GameWindow(width,

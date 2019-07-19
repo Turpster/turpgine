@@ -1,4 +1,6 @@
 using Engine.Graphics.Model;
+using OpenTK;
+using OpenTK.Graphics.OpenGL;
 
 namespace Engine.Graphics.Interface
 {
@@ -10,7 +12,7 @@ namespace Engine.Graphics.Interface
         public readonly string Name;
 
         public bool Hidden = false;
-        
+
         public GraphicalInterface(GraphicalInterfaceManager graphicalInterfaceManager, string name)
         {
             _graphicalInterfaceManager = graphicalInterfaceManager;
@@ -42,6 +44,5 @@ namespace Engine.Graphics.Interface
         {
             ModelManager.Add(obj);
         }
-
     }
 }
