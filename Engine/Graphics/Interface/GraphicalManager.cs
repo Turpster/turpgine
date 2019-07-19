@@ -42,7 +42,7 @@ namespace Engine.Graphics.Interface
         
         public static void GlBackgroundColor(Vector4 vector4)
         {
-            Engine.Logger.Log(Level.Debug, "Setting glBackgroundColor to " + vector4.Xywz + ".");
+            Engine.Logger.Log(Level.Debug, "Setting glBackgroundColor to " + vector4.X + " " + vector4.Y + " " + vector4.Z + " " + vector4.W + ".");
             GL.ClearColor(vector4.X, vector4.Y, vector4.Z, vector4.W); // TODO Might be wrong way round
         }
         
