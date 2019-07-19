@@ -21,12 +21,12 @@ namespace Engine.Graphics.Model
             foreach (var gameObject in GameModels) gameObject.Render();
         }
 
-        public void Add(Model model)
+        protected internal void Add(Model model)
         {
             _gameModels.Add(model.GetHashCode(), model);
         }
 
-        public void Remove(Model model)
+        protected internal void Remove(Model model)
         {
             _gameModels.Remove(model.GetHashCode());
         }

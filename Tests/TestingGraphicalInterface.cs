@@ -22,7 +22,7 @@ namespace Tests
                 new Vertex(new Vector3(-0.5f, -0.5f, 1.0f))
             };
             
-            ModelManager.Add(new Model3D(ModelManager, new Mesh3D(vertices)));
+            new Model3D(ModelManager, new Mesh3D(vertices));
         }
     }
 }
