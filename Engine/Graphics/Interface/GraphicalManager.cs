@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Threading;
 using Logger;
 using OpenTK;
 using OpenTK.Graphics.OpenGL;
@@ -12,20 +13,28 @@ namespace Engine.Graphics.Interface
         // <Graphical Interface Name, Graphical Interface>
         public Dictionary<string, GraphicalInterface> GraphicalInterfaces => _graphicalInterfaces;
         
-        private readonly GameWindow Window;
+        private GameWindow Window;
         
         public GraphicalManager(GameWindow window)
         {
             Window = window;
             
+            GlBackgroundColor(0.05f, 0.15f, 0.3f, 1.0f);
+
             Engine.Logger.Log(Level.Debug, "Adding RenderFrame method " + this.GetHashCode() + ".");
             Window.RenderFrame += Render;
             
-            GlBackgroundColor(0.05f, 0.15f, 0.3f, 1.0f);
+            Thread thread = new Thread(Run);
+            thread.Start();
+        }
+
+        public void Run()
+        {
+            Window = new GameWindow(Window.Width, Window.Height, null, Window.Title);
             
             Window.Run();
         }
-
+        
         public void Render()
         {
             foreach (var graphicalInterface in GraphicalInterfaces)
