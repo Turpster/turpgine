@@ -1,4 +1,4 @@
-namespace Engine
+namespace Engine.Graphics
 {
     public interface IRenderable
     {

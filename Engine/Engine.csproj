@@ -16,9 +16,6 @@
       <None Remove="Shader\GLSL\vertex-shader.vert" />
     </ItemGroup>
     <ItemGroup>
-      <Folder Include="Graphics" />
-    </ItemGroup>
-    <ItemGroup>
       <EmbeddedResource Include="Graphics\Shader\GLSL\fragment-shader.frag" />
       <EmbeddedResource Include="Graphics\Shader\GLSL\vertex-shader.vert" />
     </ItemGroup>
