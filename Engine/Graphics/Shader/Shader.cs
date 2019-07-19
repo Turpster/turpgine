@@ -1,5 +1,6 @@
 using System.Text;
 using Engine.Graphics.GlException;
+using Logger;
 using OpenTK.Graphics.OpenGL;
 
 namespace Engine.Graphics.Shader
@@ -14,6 +15,8 @@ namespace Engine.Graphics.Shader
         {
             get
             {
+                Engine.Logger.Log(Level.Debug, "Getting Shader Source for shader " + this.GetHashCode() + ".");
+                
                 var source = new StringBuilder();
                 GL.GetShaderSource(GlShader, 1, out _, source);
                 return source.ToString();
@@ -22,6 +25,7 @@ namespace Engine.Graphics.Shader
             {
                 GL.DeleteShader(GlShader);
 
+                Engine.Logger.Log(Level.Debug, "Setting Shader Source for shader " + this.GetHashCode() + ".");
                 GL.ShaderSource(GlShader, value);
 
                 Compile();
@@ -45,6 +49,8 @@ namespace Engine.Graphics.Shader
 
         private void Compile()
         {
+            Engine.Logger.Log(Level.Debug, "Compiling Shader Source for shader " + this.GetHashCode() + ".");
+            
             GL.CompileShader(GlShader);
 
             GL.GetShader(GlShader, ShaderParameter.CompileStatus, out var glShaderCompileStatus);

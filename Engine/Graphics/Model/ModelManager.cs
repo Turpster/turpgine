@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Logger;
 
 namespace Engine.Graphics.Model
 {
@@ -10,6 +11,11 @@ namespace Engine.Graphics.Model
 
         public Dictionary<int, Model>.ValueCollection GameModels => _gameModels.Values;
 
+        public ModelManager()
+        {
+            Engine.Logger.Log(Level.Debug, "Creating Model Manager " + this.GetHashCode() + ".");
+        }
+        
         public void Render()
         {
             foreach (var gameObject in GameModels) gameObject.Render();

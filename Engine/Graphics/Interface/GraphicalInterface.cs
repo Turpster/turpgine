@@ -1,4 +1,5 @@
 using Engine.Graphics.Model;
+using Logger;
 using OpenTK;
 using OpenTK.Graphics.OpenGL;
 
@@ -15,6 +16,8 @@ namespace Engine.Graphics.Interface
 
         public GraphicalInterface(GraphicalManager graphicalManager, string name)
         {
+            Engine.Logger.Log(Level.Debug, "Creating Graphical Interface " + this.GetHashCode() + ".");
+            
             _graphicalManager = graphicalManager;
             Name = name;
 
@@ -24,6 +27,8 @@ namespace Engine.Graphics.Interface
 
         ~GraphicalInterface()
         {
+            Engine.Logger.Log(Level.Debug, "Deconstructing Graphical Interface " + this.GetHashCode() + ".");
+            
             _graphicalManager._graphicalInterfaces.Remove(Name);
         }
 

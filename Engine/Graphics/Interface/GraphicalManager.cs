@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Logger;
 using OpenTK;
 using OpenTK.Graphics.OpenGL;
 
@@ -16,9 +17,11 @@ namespace Engine.Graphics.Interface
         public GraphicalManager(GameWindow window)
         {
             Window = window;
+            
+            Engine.Logger.Log(Level.Debug, "Adding RenderFrame method " + this.GetHashCode() + ".");
             Window.RenderFrame += Render;
             
-            GL.ClearColor(0.05f, 0.15f, 0.3f, 1.0f);
+            GlBackgroundColor(0.05f, 0.15f, 0.3f, 1.0f);
             
             Window.Run();
         }
@@ -47,6 +50,7 @@ namespace Engine.Graphics.Interface
         
         public static void GlBackgroundColor(Vector4 vector4)
         {
+            Engine.Logger.Log(Level.Debug, "Setting glBackgroundColor to " + vector4.Xywz + ".");
             GL.ClearColor(vector4.X, vector4.Y, vector4.Z, vector4.W); // TODO Might be wrong way round
         }
         

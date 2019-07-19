@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using Common;
+using Logger;
 using OpenTK.Graphics.OpenGL;
 
 namespace Engine.Graphics.Shader
@@ -19,11 +20,14 @@ namespace Engine.Graphics.Shader
         {
             var assembly = Assembly.GetExecutingAssembly();
 
+            Engine.Logger.Log(Level.Debug, "Loading resource 'Engine.Shader.GLSL.vertex-shader.vert'.");
             Shader vertexShader =
                 new Shader(
                     StreamUtil.ReadStringStream(
                         assembly.GetManifestResourceStream("Engine.Shader.GLSL.vertex-shader.vert")),
                     "vertex-shader.vert", ShaderType.VertexShader);
+            
+            Engine.Logger.Log(Level.Debug, "Loading resource 'Engine.Shader.GLSL.fragment-shader.frag'.");
             Shader fragmentShader =
                 new Shader(
                     StreamUtil.ReadStringStream(
@@ -42,6 +46,8 @@ namespace Engine.Graphics.Shader
 
         public void Use(ShaderProgram targetShaderProgram)
         {
+            Engine.Logger.Log(Level.Debug, "Using ShaderProgram " + targetShaderProgram.GetHashCode() + ".");
+            
             if (!_shaderPrograms.ContainsKey(targetShaderProgram.GetHashCode()))
             {
                 throw new ArgumentException("Shader Program has not been added to Hash Dictionary.");
@@ -54,10 +60,16 @@ namespace Engine.Graphics.Shader
         // TODO Ensure ShaderProgram is not bound to any other manager
         public void Add(ShaderProgram shaderProgram, bool use=false)
         {
+            Engine.Logger.Log(Level.Debug, "Adding ShaderProgram " + shaderProgram.GetHashCode() + ".");
             _shaderPrograms.Add(shaderProgram.GetHashCode(), shaderProgram);
+            
             if (use) Use(shaderProgram);
         }
 
-        public void Remove(ShaderProgram shaderProgram) => _shaderPrograms.Remove(shaderProgram.GetHashCode());
+        public void Remove(ShaderProgram shaderProgram)
+        {
+            Engine.Logger.Log(Level.Debug, "Removing ShaderProgram " + shaderProgram.GetHashCode() + ".");
+            _shaderPrograms.Remove(shaderProgram.GetHashCode());
+        }
     }
 }

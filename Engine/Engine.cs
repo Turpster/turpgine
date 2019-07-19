@@ -27,7 +27,10 @@ namespace Engine
             SetupLogger();
             
             Window = window;
+            
+            Logger.Log(Level.Debug, "Creating new ShaderProgramManager object.");
             ShaderProgramManager = new ShaderProgramManager();
+            Logger.Log(Level.Debug, "Creating new GraphicalManager object.");
             GraphicalManager = new GraphicalManager(Window);
         }
 
@@ -39,8 +42,9 @@ namespace Engine
         private void SetupLogger()
         {
             Logger.AddOutput(Console.Out);
+            Logger.Log(Level.Info, "Logger has been initialized.");
             Logger.Log(Level.Debug, "You may see more logs then expected since Debug mode is on.");
-
+            
             AppDomain.CurrentDomain.UnhandledException += (sender, args) =>
             {
                 var targetException = (Exception) args.ExceptionObject;
