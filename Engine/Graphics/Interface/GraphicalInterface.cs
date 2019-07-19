@@ -8,23 +8,23 @@ namespace Engine.Graphics.Interface
     {
         protected readonly ModelManager ModelManager = new ModelManager();
 
-        private readonly GraphicalInterfaceManager _graphicalInterfaceManager;
+        private readonly GraphicalManager _graphicalManager;
         public readonly string Name;
 
         public bool Hidden = false;
 
-        public GraphicalInterface(GraphicalInterfaceManager graphicalInterfaceManager, string name)
+        public GraphicalInterface(GraphicalManager graphicalManager, string name)
         {
-            _graphicalInterfaceManager = graphicalInterfaceManager;
+            _graphicalManager = graphicalManager;
             Name = name;
 
-            _graphicalInterfaceManager._graphicalInterfaces.Add(Name, this);
+            _graphicalManager._graphicalInterfaces.Add(Name, this);
 
         }
 
         ~GraphicalInterface()
         {
-            _graphicalInterfaceManager._graphicalInterfaces.Remove(Name);
+            _graphicalManager._graphicalInterfaces.Remove(Name);
         }
 
         public void Render()

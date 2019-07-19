@@ -4,7 +4,7 @@ using OpenTK.Graphics.OpenGL;
 
 namespace Engine.Graphics.Interface
 {
-    public class GraphicalInterfaceManager : IRenderable
+    public class GraphicalManager : IRenderable
     {
         protected internal Dictionary<string, GraphicalInterface> _graphicalInterfaces = new Dictionary<string, GraphicalInterface>();
         
@@ -13,7 +13,7 @@ namespace Engine.Graphics.Interface
         
         private readonly GameWindow Window;
         
-        public GraphicalInterfaceManager(GameWindow window)
+        public GraphicalManager(GameWindow window)
         {
             Window = window;
             Window.RenderFrame += Render;

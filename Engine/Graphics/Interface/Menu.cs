@@ -2,7 +2,7 @@ namespace Engine.Graphics.Interface
 {
     public class Menu : GraphicalInterface
     {
-        public Menu(GraphicalInterfaceManager graphicalInterfaceManager, string name) : base(graphicalInterfaceManager, name)
+        public Menu(GraphicalManager graphicalManager, string name) : base(graphicalManager, name)
         {
             
         }

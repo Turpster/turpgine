@@ -19,7 +19,7 @@ namespace Engine
 
         public readonly GameWindow Window;
         
-        public readonly GraphicalInterfaceManager GraphicalInterfaceManager;
+        public readonly GraphicalManager GraphicalManager;
         public readonly ShaderProgramManager ShaderProgramManager;
         
         public Engine(GameWindow window)
@@ -28,7 +28,7 @@ namespace Engine
             
             Window = window;
             ShaderProgramManager = new ShaderProgramManager();
-            GraphicalInterfaceManager = new GraphicalInterfaceManager(Window);
+            GraphicalManager = new GraphicalManager(Window);
         }
 
         public Engine(int width = 600, int height = 600, string title = "Open-GL Engine") : this(new GameWindow(width,

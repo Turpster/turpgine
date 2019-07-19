@@ -4,7 +4,7 @@ namespace Engine.Graphics.Interface
 {
     public class Space : GraphicalInterface
     {
-        public Space(GraphicalInterfaceManager graphicalInterfaceManager, string name) : base(graphicalInterfaceManager, name)
+        public Space(GraphicalManager graphicalManager, string name) : base(graphicalManager, name)
         {
             
         }
