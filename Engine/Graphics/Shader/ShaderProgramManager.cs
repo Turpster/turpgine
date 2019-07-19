@@ -20,18 +20,21 @@ namespace Engine.Graphics.Shader
         {
             var assembly = Assembly.GetExecutingAssembly();
 
-            Engine.Logger.Log(Level.Debug, "Loading resource 'Graphics.Shader.GLSL.vertex-shader.vert'.");
+            string vertexShaderResource = "Engine.Graphics.Shader.GLSL.vertex-shader.vert";            
+            string fragmentShaderResource = "Engine.Graphics.Shader.GLSL.fragment-shader.frag";
+
+            Engine.Logger.Log(Level.Debug, "Loading resource '" + vertexShaderResource + "'.");
             Shader vertexShader =
                 new Shader(
                     StreamUtil.ReadStringStream(
-                        assembly.GetManifestResourceStream("Graphics.Shader.GLSL.vertex-shader.vert")),
+                        assembly.GetManifestResourceStream(vertexShaderResource)),
                     "vertex-shader.vert", ShaderType.VertexShader);
             
-            Engine.Logger.Log(Level.Debug, "Loading resource 'Graphics.Shader.GLSL.fragment-shader.frag'.");
+            Engine.Logger.Log(Level.Debug, "Loading resource '" + fragmentShaderResource + "'.");
             Shader fragmentShader =
                 new Shader(
                     StreamUtil.ReadStringStream(
-                        assembly.GetManifestResourceStream("Graphics.Shader.GLSL.fragment-shader.frag")),
+                        assembly.GetManifestResourceStream(fragmentShaderResource)),
                     "fragment-shader.frag", ShaderType.FragmentShader);
 
             ShaderProgram shaderProgram = new ShaderProgram(vertexShader, fragmentShader);
