@@ -64,7 +64,7 @@ namespace Engine.Graphics.Model._3D
             GL.BindVertexArray(0);
         }
 
-        protected internal override void GlTerminate()
+        protected internal override void GlDispose()
         {
             throw new NotImplementedException();
         }

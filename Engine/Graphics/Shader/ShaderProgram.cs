@@ -47,7 +47,7 @@ namespace Engine.Graphics.Shader
         {
             // TODO This could possibly be executed in wrong thread.
 
-            GlTerminate();
+            GlDispose();
         }
 
 
@@ -116,10 +116,10 @@ namespace Engine.Graphics.Shader
 
             GlLoad();
 
-            foreach (var shader in Shaders) shader.GlTerminate();
+            foreach (var shader in Shaders) shader.GlDispose();
         }
 
-        protected internal override void GlTerminate()
+        protected internal override void GlDispose()
         {
             throw new NotImplementedException();
         }

@@ -26,9 +26,9 @@ namespace Engine.Graphics.Model
             foreach (var gameObject in GameModels) gameObject.GlInitialise();
         }
 
-        protected internal override void GlTerminate()
+        protected internal override void GlDispose()
         {
-            foreach (var gameObject in GameModels) gameObject.GlTerminate();
+            foreach (var gameObject in GameModels) gameObject.GlDispose();
         }
 
         protected internal void Add(Model model)

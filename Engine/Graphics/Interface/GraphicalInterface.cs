@@ -38,9 +38,9 @@ namespace Engine.Graphics.Interface
             ModelManager.GlInitialise();
         }
 
-        protected internal override void GlTerminate()
+        protected internal override void GlDispose()
         {
-            ModelManager.GlTerminate();
+            ModelManager.GlDispose();
         }
 
         public void Add(Model.Model obj)

@@ -17,6 +17,7 @@ namespace Logger
 
         public Logger(Level level) : this(level.Priority)
         {
+            
         }
 
         public List<TextWriter> Outputs { get; } = new List<TextWriter>();

@@ -78,7 +78,7 @@ namespace Engine.Graphics.Shader
             GlUse(shaderProgram);
         }
 
-        protected internal override void GlTerminate()
+        protected internal override void GlDispose()
         {
             throw new NotImplementedException();
         }

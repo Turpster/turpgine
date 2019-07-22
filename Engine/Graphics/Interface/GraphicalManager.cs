@@ -75,9 +75,9 @@ namespace Engine.Graphics.Interface
             ExecuteGlActions();
         }
 
-        protected internal override void GlTerminate()
+        protected internal override void GlDispose()
         {
-            foreach (var graphicalInterface in GraphicalInterfaces) graphicalInterface.Value.GlTerminate();
+            foreach (var graphicalInterface in GraphicalInterfaces) graphicalInterface.Value.GlDispose();
 
             _graphicalInterfaces.Clear();
 

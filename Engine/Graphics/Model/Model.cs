@@ -27,9 +27,9 @@ namespace Engine.Graphics.Model
             _mesh.GlInitialise();
         }
 
-        protected internal override void GlTerminate()
+        protected internal override void GlDispose()
         {
-            _mesh.GlTerminate();
+            _mesh.GlDispose();
         }
     }
 }

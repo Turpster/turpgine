@@ -99,7 +99,7 @@ namespace Engine.Graphics.Shader
             Compile();
         }
 
-        protected internal override void GlTerminate()
+        protected internal override void GlDispose()
         {
             GL.DeleteShader(GlShader);
         }
