@@ -9,16 +9,12 @@ namespace Engine.Graphics.Shader
 {
     public class ShaderProgramManager : GlObject
     {
-        private readonly Dictionary<int, ShaderProgram> _shaderPrograms = new Dictionary<int, ShaderProgram>();
-
-        public Dictionary<int, ShaderProgram>.ValueCollection ShaderPrograms => _shaderPrograms.Values;
-
         // TODO Create properties to pickup current shader through OpenGL.
-        private static int _currentShaderHash = 0;
+        private static int _currentShaderHash;
+        private readonly Dictionary<int, ShaderProgram> _shaderPrograms = new Dictionary<int, ShaderProgram>();
 
         public ShaderProgramManager()
         {
-            
         }
 
         public ShaderProgramManager(ShaderProgram shaderProgram)
@@ -26,14 +22,14 @@ namespace Engine.Graphics.Shader
             Add(shaderProgram);
         }
 
+        public Dictionary<int, ShaderProgram>.ValueCollection ShaderPrograms => _shaderPrograms.Values;
+
         protected internal void GlUse(ShaderProgram targetShaderProgram)
         {
             Engine.Logger.Log(Level.Debug, "Using ShaderProgram " + targetShaderProgram.GetHashCode() + ".");
-            
+
             if (!_shaderPrograms.ContainsKey(targetShaderProgram.GetHashCode()))
-            {
                 throw new ArgumentException("Shader Program has not been added to Hash Dictionary.");
-            }
 
             targetShaderProgram.Use();
             _currentShaderHash = targetShaderProgram.GetHashCode();
@@ -56,27 +52,27 @@ namespace Engine.Graphics.Shader
         {
             var assembly = Assembly.GetExecutingAssembly();
 
-            string vertexShaderResource = "Engine.Graphics.Shader.GLSL.vertex-shader.vert";            
-            string fragmentShaderResource = "Engine.Graphics.Shader.GLSL.fragment-shader.frag";
+            var vertexShaderResource = "Engine.Graphics.Shader.GLSL.vertex-shader.vert";
+            var fragmentShaderResource = "Engine.Graphics.Shader.GLSL.fragment-shader.frag";
 
             Engine.Logger.Log(Level.Debug, "Loading resource '" + vertexShaderResource + "'.");
-            Shader vertexShader =
+            var vertexShader =
                 new Shader(
                     StreamUtil.ReadStringStream(
                         assembly.GetManifestResourceStream(vertexShaderResource)),
                     "vertex-shader.vert", ShaderType.VertexShader);
-            
+
             Engine.Logger.Log(Level.Debug, "Loading resource '" + fragmentShaderResource + "'.");
-            Shader fragmentShader =
+            var fragmentShader =
                 new Shader(
                     StreamUtil.ReadStringStream(
                         assembly.GetManifestResourceStream(fragmentShaderResource)),
                     "fragment-shader.frag", ShaderType.FragmentShader);
 
-            ShaderProgram shaderProgram = new ShaderProgram(vertexShader, fragmentShader);
+            var shaderProgram = new ShaderProgram(vertexShader, fragmentShader);
 
             shaderProgram.GlInitialise();
-            
+
             Add(shaderProgram);
 
             GlUse(shaderProgram);

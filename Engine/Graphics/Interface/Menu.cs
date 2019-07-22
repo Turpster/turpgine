@@ -4,7 +4,6 @@ namespace Engine.Graphics.Interface
     {
         public Menu(GraphicalManager graphicalManager, string name) : base(graphicalManager, name)
         {
-            
         }
     }
 }

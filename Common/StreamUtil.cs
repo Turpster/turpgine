@@ -1,5 +1,4 @@
-﻿using System;
-using System.IO;
+﻿using System.IO;
 
 namespace Common
 {
@@ -7,8 +6,10 @@ namespace Common
     {
         public static string ReadStringStream(Stream stream)
         {
-            using (StreamReader streamReader = new StreamReader(stream))
+            using (var streamReader = new StreamReader(stream))
+            {
                 return streamReader.ReadToEnd();
+            }
         }
     }
 }

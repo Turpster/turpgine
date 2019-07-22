@@ -1,5 +1,4 @@
-using System.Reflection;
-using Common;
+using System;
 using Engine.Graphics.GlException;
 using Logger;
 using OpenTK.Graphics.OpenGL;
@@ -9,7 +8,7 @@ namespace Engine.Graphics.Shader
     public class ShaderProgram : GlObject
     {
         private int GlProgram;
-        
+
         public ShaderProgram(Shader vertexShader, Shader fragmentShader)
         {
             VertexShader = vertexShader;
@@ -24,7 +23,7 @@ namespace Engine.Graphics.Shader
             set
             {
                 Engine.Logger.Log(Level.Debug, "Using Vertex Shader " + value.GetHashCode() + ".");
-                
+
                 var vertIndex = ShaderIndex.Vertex.Value;
 
                 Shaders[vertIndex] = value;
@@ -37,7 +36,7 @@ namespace Engine.Graphics.Shader
             set
             {
                 Engine.Logger.Log(Level.Debug, "Using Fragment Shader " + value.GetHashCode() + ".");
-                
+
                 var fragIndex = ShaderIndex.Fragment.Value;
 
                 Shaders[fragIndex] = value;
@@ -47,7 +46,7 @@ namespace Engine.Graphics.Shader
         ~ShaderProgram()
         {
             // TODO This could possibly be executed in wrong thread.
-            
+
             GlTerminate();
         }
 
@@ -60,24 +59,23 @@ namespace Engine.Graphics.Shader
         public bool ContainsShader(Shader glShader)
         {
             foreach (var shader in Shaders)
-            {
-                if (shader == glShader) return true; 
-            }
+                if (shader == glShader)
+                    return true;
 
             return false;
         }
 
         private void GlUnload()
         {
-            Engine.Logger.Log(Level.Debug, "Unloading ShaderProgram " + this.GetHashCode() + ".");
-            
+            Engine.Logger.Log(Level.Debug, "Unloading ShaderProgram " + GetHashCode() + ".");
+
             GL.DeleteProgram(GlProgram);
         }
 
         private void Link()
         {
-            Engine.Logger.Log(Level.Debug, "Linking ShaderProgram " + this.GetHashCode() + ".");
-            
+            Engine.Logger.Log(Level.Debug, "Linking ShaderProgram " + GetHashCode() + ".");
+
             GL.LinkProgram(GlProgram);
             GL.GetProgram(GlProgram, GetProgramParameterName.LinkStatus, out var linkStatus);
             if (linkStatus != 1) throw new GlProgramLinkException(GL.GetProgramInfoLog(GlProgram));
@@ -85,7 +83,7 @@ namespace Engine.Graphics.Shader
 
         private void Validate()
         {
-            Engine.Logger.Log(Level.Debug, "Validating ShaderProgram " + this.GetHashCode() + ".");
+            Engine.Logger.Log(Level.Debug, "Validating ShaderProgram " + GetHashCode() + ".");
 
             GL.ValidateProgram(GlProgram);
             GL.GetProgram(GlProgram, GetProgramParameterName.ValidateStatus, out var validateStatus);
@@ -94,14 +92,14 @@ namespace Engine.Graphics.Shader
 
         private void GlLoad()
         {
-            Engine.Logger.Log(Level.Debug, "Loading ShaderProgram " + this.GetHashCode() + ".");
-            
+            Engine.Logger.Log(Level.Debug, "Loading ShaderProgram " + GetHashCode() + ".");
+
             GlProgram = GL.CreateProgram();
-            
+
             foreach (var shader in Shaders)
                 if (shader != null)
                     GL.AttachShader(GlProgram, shader.GlShader);
-            
+
             Link();
             Validate();
         }
@@ -110,6 +108,20 @@ namespace Engine.Graphics.Shader
         {
             GlUnload();
             GlLoad();
+        }
+
+        protected internal override void GlInitialise()
+        {
+            foreach (var shader in Shaders) shader.GlInitialise();
+
+            GlLoad();
+
+            foreach (var shader in Shaders) shader.GlTerminate();
+        }
+
+        protected internal override void GlTerminate()
+        {
+            throw new NotImplementedException();
         }
 
         private class ShaderIndex
@@ -130,26 +142,6 @@ namespace Engine.Graphics.Shader
 
                 Num++;
             }
-        }
-
-        protected internal override void GlInitialise()
-        {
-            foreach (Shader shader in Shaders)
-            {
-                shader.GlInitialise();
-            }
-            
-            GlLoad();
-
-            foreach (Shader shader in Shaders)
-            {
-                shader.GlTerminate();
-            }
-        }
-
-        protected internal override void GlTerminate()
-        {
-            throw new System.NotImplementedException();
         }
     }
 }

@@ -7,13 +7,13 @@ namespace Engine.Graphics.Model._3D
 {
     public class Mesh3D : Mesh
     {
+        private readonly uint[] Indices;
+
+        private readonly Vertex[] Vertices;
         public uint[] GlBuffers;
+        public uint GlElementBuffer;
 
         public uint GlVao;
-        public uint GlElementBuffer;
-        
-        private readonly Vertex[] Vertices;
-        private readonly uint[] Indices;
 
         public Mesh3D(Vertex[] vertices, uint[] indices)
         {
@@ -37,11 +37,8 @@ namespace Engine.Graphics.Model._3D
         protected internal override void GlInitialise()
         {
             var positions = new Vector3[Vertices.Length];
-            
-            for (var i = 0; i < Vertices.Length; i++) 
-            {
-                positions[i] = Vertices[i].Position;
-            }
+
+            for (var i = 0; i < Vertices.Length; i++) positions[i] = Vertices[i].Position;
 
             GL.GenVertexArrays(1, out GlVao);
             GL.BindVertexArray(GlVao);
@@ -77,23 +74,19 @@ namespace Engine.Graphics.Model._3D
             if (ReferenceEquals(null, obj)) return false;
             if (ReferenceEquals(this, obj)) return true;
             if (obj.GetType() != GetType()) return false;
-            
+
             return Equals((Mesh3D) obj);
         }
 
         public static bool operator ==(Mesh3D mesh3D, Mesh3D targetMesh3D)
         {
             if (!ReferenceEquals(mesh3D, null) && !ReferenceEquals(targetMesh3D, null))
-            {
                 if (mesh3D.GlVao == targetMesh3D.GlVao)
-                {
                     return true;
-                }
-            }
 
             return ReferenceEquals(mesh3D, targetMesh3D);
         }
-        
+
 
         public static bool operator !=(Mesh3D mesh3D, Mesh3D targetMesh3D)
         {

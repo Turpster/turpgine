@@ -5,13 +5,13 @@ namespace Engine.Graphics.Model
         private readonly ModelManager _modelManager;
 
         protected Mesh _mesh;
-        
+
         protected Model(ModelManager modelManager, Mesh mesh)
         {
             _modelManager = modelManager;
 
             _mesh = mesh;
-            
+
             _modelManager.Add(this);
         }
 

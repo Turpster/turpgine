@@ -3,19 +3,19 @@ using Logger;
 
 namespace Engine.Graphics.Model
 {
-    public class ModelManager : GlObject, IRenderable 
+    public class ModelManager : GlObject, IRenderable
     {
+        public ModelManager()
+        {
+            Engine.Logger.Log(Level.Debug, "Creating Model Manager " + GetHashCode() + ".");
+        }
+
         // <GameModel Hash, GameObject>
         // TODO Current implementation of GetHashCode is not completely unique.
         private Dictionary<int, Model> _gameModels { get; } = new Dictionary<int, Model>();
 
         public Dictionary<int, Model>.ValueCollection GameModels => _gameModels.Values;
 
-        public ModelManager()
-        {
-            Engine.Logger.Log(Level.Debug, "Creating Model Manager " + this.GetHashCode() + ".");
-        }
-        
         public void Render()
         {
             foreach (var gameObject in GameModels) gameObject.Render();

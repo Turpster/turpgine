@@ -1,9 +1,7 @@
 using System;
 using Engine.Graphics.Interface;
-using Engine.Graphics.Shader;
 using Logger;
 using OpenTK;
-using OpenTK.Graphics.OpenGL;
 
 namespace Engine
 {
@@ -17,15 +15,16 @@ namespace Engine
             #endif
         );
 
-        public readonly GameWindow Window;
-        
         public readonly GraphicalManager GraphicalManager;
+
+        public readonly GameWindow Window;
+
         public Engine(GameWindow window)
         {
             SetupLogger();
-            
+
             Window = window;
-            
+
             Logger.Log(Level.Debug, "Creating new GraphicalManager object.");
             GraphicalManager = new GraphicalManager(Window);
         }
@@ -40,7 +39,7 @@ namespace Engine
             Logger.AddOutput(Console.Out);
             Logger.Log(Level.Info, "Logger has been initialized.");
             Logger.Log(Level.Debug, "You may see more logs then expected since Debug mode is on.");
-            
+
             AppDomain.CurrentDomain.UnhandledException += (sender, args) =>
             {
                 var targetException = (Exception) args.ExceptionObject;

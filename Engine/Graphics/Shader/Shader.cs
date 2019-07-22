@@ -1,5 +1,3 @@
-using System;
-using System.Collections.Generic;
 using System.Text;
 using Engine.Graphics.GlException;
 using Logger;
@@ -9,34 +7,12 @@ namespace Engine.Graphics.Shader
 {
     public class Shader : GlObject
     {
+        public readonly ShaderType ShaderType;
+
+        private readonly string _fileName;
         public int GlShader;
 
-        private string _fileName;
-
         public string ShaderSource;
-        
-        public string GlShaderSource
-        {
-            get
-            {
-                Engine.Logger.Log(Level.Debug, "Getting Shader Source for shader " + this.GetHashCode() + ".");
-                
-                var source = new StringBuilder();
-                GL.GetShaderSource(GlShader, 1, out _, source);
-                return source.ToString();
-            }
-            set
-            {
-                GL.DeleteShader(GlShader);
-
-                Engine.Logger.Log(Level.Debug, "Setting Shader Source for shader " + this.GetHashCode() + ".");
-                GL.ShaderSource(GlShader, value);
-
-                Compile();
-            }
-        }
-
-        public readonly ShaderType ShaderType;
 
         public Shader(string shaderSource, string fileName, ShaderType shaderType)
         {
@@ -47,37 +23,55 @@ namespace Engine.Graphics.Shader
             ShaderSource = shaderSource;
         }
 
+        public string GlShaderSource
+        {
+            get
+            {
+                Engine.Logger.Log(Level.Debug, "Getting Shader Source for shader " + GetHashCode() + ".");
+
+                var source = new StringBuilder();
+                GL.GetShaderSource(GlShader, 1, out _, source);
+                return source.ToString();
+            }
+            set
+            {
+                GL.DeleteShader(GlShader);
+
+                Engine.Logger.Log(Level.Debug, "Setting Shader Source for shader " + GetHashCode() + ".");
+                GL.ShaderSource(GlShader, value);
+
+                Compile();
+            }
+        }
+
         private void Compile()
         {
-            Engine.Logger.Log(Level.Debug, "Compiling Shader Source for shader " + this.GetHashCode() + ".");
-            
+            Engine.Logger.Log(Level.Debug, "Compiling Shader Source for shader " + GetHashCode() + ".");
+
             GL.CompileShader(GlShader);
 
             GL.GetShader(GlShader, ShaderParameter.CompileStatus, out var glShaderCompileStatus);
             if (glShaderCompileStatus != 1) throw new GlShaderCompileException(GlShader, _fileName);
         }
 
-        public static bool operator==(Shader shader, Shader targetShader)
+        public static bool operator ==(Shader shader, Shader targetShader)
         {
             if (!ReferenceEquals(shader, null) && !ReferenceEquals(targetShader, null))
-            {
                 if (shader.GlShader == targetShader.GlShader)
-                {
                     return true;
-                }
-            }
 
             return ReferenceEquals(shader, targetShader);
         }
-        
-        public static bool operator!=(Shader shader, Shader targetShader)
+
+        public static bool operator !=(Shader shader, Shader targetShader)
         {
             return !(shader == targetShader);
         }
-        
+
         public bool Equals(Shader other)
         {
-            return GlShader == other.GlShader;;
+            return GlShader == other.GlShader;
+            ;
         }
 
         public override bool Equals(object obj)
@@ -95,7 +89,7 @@ namespace Engine.Graphics.Shader
                 return hashCode;
             }
         }
-        
+
         protected internal override void GlInitialise()
         {
             GlShader = GL.CreateShader(ShaderType);

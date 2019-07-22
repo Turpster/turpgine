@@ -1,33 +1,35 @@
 using Engine.Graphics.Model;
 using Logger;
-using OpenTK;
-using OpenTK.Graphics.OpenGL;
 
 namespace Engine.Graphics.Interface
 {
-    public abstract class GraphicalInterface : GlObject, IRenderable 
+    public abstract class GraphicalInterface : GlObject, IRenderable
     {
-        protected readonly ModelManager ModelManager = new ModelManager();
-
         private readonly GraphicalManager _graphicalManager;
+        protected readonly ModelManager ModelManager = new ModelManager();
         public readonly string Name;
 
         public bool Hidden = false;
 
         public GraphicalInterface(GraphicalManager graphicalManager, string name)
         {
-            Engine.Logger.Log(Level.Debug, "Creating Graphical Interface " + this.GetHashCode() + ".");
-            
+            Engine.Logger.Log(Level.Debug, "Creating Graphical Interface " + GetHashCode() + ".");
+
             _graphicalManager = graphicalManager;
             Name = name;
 
             _graphicalManager._graphicalInterfaces.Add(Name, this);
         }
 
+        public void Render()
+        {
+            foreach (var model in ModelManager.GameModels) model.Render();
+        }
+
         ~GraphicalInterface()
         {
-            Engine.Logger.Log(Level.Debug, "Deconstructing Graphical Interface " + this.GetHashCode() + ".");
-            
+            Engine.Logger.Log(Level.Debug, "Deconstructing Graphical Interface " + GetHashCode() + ".");
+
             _graphicalManager._graphicalInterfaces.Remove(Name);
         }
 
@@ -35,20 +37,12 @@ namespace Engine.Graphics.Interface
         {
             ModelManager.GlInitialise();
         }
-        
+
         protected internal override void GlTerminate()
         {
             ModelManager.GlTerminate();
         }
 
-        public void Render()
-        {
-            foreach (var model in ModelManager.GameModels)
-            {
-                model.Render();
-            }
-        }
-        
         public void Add(Model.Model obj)
         {
             ModelManager.Add(obj);
