@@ -8,7 +8,7 @@ using OpenTK.Graphics.OpenGL;
 
 namespace Engine.Graphics.Interface
 {
-    public class GraphicalManager : IRenderable
+    public class GraphicalManager : GlObject, IRenderable
     {
         public static readonly List<Action> GlActions = new List<Action>();
 
@@ -46,7 +46,7 @@ namespace Engine.Graphics.Interface
             Window.ProcessEvents();
         }
 
-        public void GlInitialise()
+        protected internal override void GlInitialise()
         {
             Window = new GameWindow(Window.Width, Window.Height, null, Window.Title);
 
@@ -75,7 +75,7 @@ namespace Engine.Graphics.Interface
             ExecuteGlActions();
         }
 
-        public void Terminate()
+        protected internal override void GlTerminate()
         {
             foreach (var graphicalInterface in GraphicalInterfaces) graphicalInterface.Value.GlTerminate();
 
