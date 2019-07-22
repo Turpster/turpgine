@@ -5,7 +5,7 @@ using OpenTK.Graphics.OpenGL;
 
 namespace Engine.Graphics.Interface
 {
-    public abstract class GraphicalInterface : IRenderable
+    public abstract class GraphicalInterface : GlObject, IRenderable 
     {
         protected readonly ModelManager ModelManager = new ModelManager();
 
@@ -22,7 +22,6 @@ namespace Engine.Graphics.Interface
             Name = name;
 
             _graphicalManager._graphicalInterfaces.Add(Name, this);
-
         }
 
         ~GraphicalInterface()
@@ -32,11 +31,16 @@ namespace Engine.Graphics.Interface
             _graphicalManager._graphicalInterfaces.Remove(Name);
         }
 
-        public void GlInit()
+        protected internal override void GlInitialise()
         {
-            ModelManager.GlInit();
+            ModelManager.GlInitialise();
         }
         
+        protected internal override void GlTerminate()
+        {
+            ModelManager.GlTerminate();
+        }
+
         public void Render()
         {
             foreach (var model in ModelManager.GameModels)

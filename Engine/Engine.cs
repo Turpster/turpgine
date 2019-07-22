@@ -20,16 +20,12 @@ namespace Engine
         public readonly GameWindow Window;
         
         public readonly GraphicalManager GraphicalManager;
-        public readonly ShaderProgramManager ShaderProgramManager;
-        
         public Engine(GameWindow window)
         {
             SetupLogger();
             
             Window = window;
             
-            Logger.Log(Level.Debug, "Creating new ShaderProgramManager object.");
-            ShaderProgramManager = new ShaderProgramManager();
             Logger.Log(Level.Debug, "Creating new GraphicalManager object.");
             GraphicalManager = new GraphicalManager(Window);
         }

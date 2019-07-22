@@ -3,7 +3,7 @@ using Logger;
 
 namespace Engine.Graphics.Model
 {
-    public class ModelManager : IRenderable
+    public class ModelManager : GlObject, IRenderable 
     {
         // <GameModel Hash, GameObject>
         // TODO Current implementation of GetHashCode is not completely unique.
@@ -21,9 +21,14 @@ namespace Engine.Graphics.Model
             foreach (var gameObject in GameModels) gameObject.Render();
         }
 
-        public void GlInit()
+        protected internal override void GlInitialise()
         {
-            foreach (var gameObject in GameModels) gameObject.GlInit();
+            foreach (var gameObject in GameModels) gameObject.GlInitialise();
+        }
+
+        protected internal override void GlTerminate()
+        {
+            foreach (var gameObject in GameModels) gameObject.GlTerminate();
         }
 
         protected internal void Add(Model model)

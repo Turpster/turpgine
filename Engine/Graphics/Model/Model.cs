@@ -1,6 +1,6 @@
 namespace Engine.Graphics.Model
 {
-    public abstract class Model : IRenderable
+    public abstract class Model : GlObject, IRenderable
     {
         private readonly ModelManager _modelManager;
 
@@ -22,9 +22,14 @@ namespace Engine.Graphics.Model
             _modelManager.Remove(this);
         }
 
-        public void GlInit()
+        protected internal override void GlInitialise()
         {
-            _mesh.GlInit();
+            _mesh.GlInitialise();
+        }
+
+        protected internal override void GlTerminate()
+        {
+            _mesh.GlTerminate();
         }
     }
 }

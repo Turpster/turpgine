@@ -1,3 +1,5 @@
+using System;
+using System.Collections.Generic;
 using System.Text;
 using Engine.Graphics.GlException;
 using Logger;
@@ -5,13 +7,15 @@ using OpenTK.Graphics.OpenGL;
 
 namespace Engine.Graphics.Shader
 {
-    public struct Shader
+    public class Shader : GlObject
     {
-        public readonly int GlShader;
+        public int GlShader;
 
-        private readonly string _fileName;
+        private string _fileName;
 
-        public string ShaderSource
+        public string ShaderSource;
+        
+        public string GlShaderSource
         {
             get
             {
@@ -40,11 +44,7 @@ namespace Engine.Graphics.Shader
 
             ShaderType = shaderType;
 
-            GlShader = GL.CreateShader(shaderType);
-
-            GL.ShaderSource(GlShader, shaderSource);
-
-            Compile();
+            ShaderSource = shaderSource;
         }
 
         private void Compile()
@@ -59,7 +59,15 @@ namespace Engine.Graphics.Shader
 
         public static bool operator==(Shader shader, Shader targetShader)
         {
-            return shader.GlShader == targetShader.GlShader;
+            if (!ReferenceEquals(shader, null) && !ReferenceEquals(targetShader, null))
+            {
+                if (shader.GlShader == targetShader.GlShader)
+                {
+                    return true;
+                }
+            }
+
+            return ReferenceEquals(shader, targetShader);
         }
         
         public static bool operator!=(Shader shader, Shader targetShader)
@@ -86,6 +94,20 @@ namespace Engine.Graphics.Shader
                 hashCode = (hashCode * 397) ^ (int) ShaderType;
                 return hashCode;
             }
+        }
+        
+        protected internal override void GlInitialise()
+        {
+            GlShader = GL.CreateShader(ShaderType);
+
+            GL.ShaderSource(GlShader, ShaderSource);
+
+            Compile();
+        }
+
+        protected internal override void GlTerminate()
+        {
+            GL.DeleteShader(GlShader);
         }
     }
 }

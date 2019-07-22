@@ -33,7 +33,7 @@ namespace Engine.Graphics.Model._3D
             return Equals(GlBuffers, other.GlBuffers) && GlVao == other.GlVao && NumVertices == other.NumVertices;
         }
 
-        public override void GlInit()
+        protected internal override void GlInitialise()
         {
             NumVertices = Vertices.Count;
 
@@ -56,6 +56,11 @@ namespace Engine.Graphics.Model._3D
             GL.BindVertexArray(0);
         }
 
+        protected internal override void GlTerminate()
+        {
+            throw new NotImplementedException();
+        }
+
         public override bool Equals(object obj)
         {
             if (ReferenceEquals(null, obj)) return false;
@@ -64,24 +69,19 @@ namespace Engine.Graphics.Model._3D
             return Equals((Mesh3D) obj);
         }
 
-        public override int GetHashCode()
-        {
-            unchecked
-            {
-                var hashCode = GlBuffers != null ? GlBuffers.GetHashCode() : 0;
-                hashCode = (hashCode * 397) ^ (int) GlVao;
-                hashCode = (hashCode * 397) ^ NumVertices;
-                return hashCode;
-            }
-        }
-
         public static bool operator ==(Mesh3D mesh3D, Mesh3D targetMesh3D)
         {
-            if (mesh3D == null || targetMesh3D == null)
-                return false;
+            if (!ReferenceEquals(mesh3D, null) && !ReferenceEquals(targetMesh3D, null))
+            {
+                if (mesh3D.GlVao == targetMesh3D.GlVao)
+                {
+                    return true;
+                }
+            }
 
-            return mesh3D.GlVao == targetMesh3D.GlVao;
+            return ReferenceEquals(mesh3D, targetMesh3D);
         }
+        
 
         public static bool operator !=(Mesh3D mesh3D, Mesh3D targetMesh3D)
         {

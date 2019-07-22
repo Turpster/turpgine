@@ -6,7 +6,7 @@ using OpenTK.Graphics.OpenGL;
 
 namespace Engine.Graphics.Shader
 {
-    public class ShaderProgram
+    public class ShaderProgram : GlObject
     {
         private int GlProgram;
         
@@ -14,13 +14,11 @@ namespace Engine.Graphics.Shader
         {
             VertexShader = vertexShader;
             FragmentShader = fragmentShader;
-
-            Load();
         }
 
-        public Shader?[] Shaders { get; } = new Shader?[ShaderIndex.Num];
+        public Shader[] Shaders { get; } = new Shader[ShaderIndex.Num];
 
-        public Shader? VertexShader
+        protected internal Shader VertexShader
         {
             get => Shaders[ShaderIndex.Vertex.Value];
             set
@@ -30,12 +28,10 @@ namespace Engine.Graphics.Shader
                 var vertIndex = ShaderIndex.Vertex.Value;
 
                 Shaders[vertIndex] = value;
-
-                Reload();
             }
         }
 
-        public Shader? FragmentShader
+        protected internal Shader FragmentShader
         {
             get => Shaders[ShaderIndex.Fragment.Value];
             set
@@ -45,14 +41,14 @@ namespace Engine.Graphics.Shader
                 var fragIndex = ShaderIndex.Fragment.Value;
 
                 Shaders[fragIndex] = value;
-
-                Reload();
             }
         }
 
         ~ShaderProgram()
         {
-            Unload();
+            // TODO This could possibly be executed in wrong thread.
+            
+            GlTerminate();
         }
 
 
@@ -65,15 +61,13 @@ namespace Engine.Graphics.Shader
         {
             foreach (var shader in Shaders)
             {
-                if (shader == null) continue;
-                
-                if (shader.Value == glShader) return true; 
+                if (shader == glShader) return true; 
             }
 
             return false;
         }
 
-        private void Unload()
+        private void GlUnload()
         {
             Engine.Logger.Log(Level.Debug, "Unloading ShaderProgram " + this.GetHashCode() + ".");
             
@@ -98,24 +92,24 @@ namespace Engine.Graphics.Shader
             if (validateStatus != 1) throw new GlProgramValidateException(GL.GetProgramInfoLog(GlProgram));
         }
 
-        private void Load()
+        private void GlLoad()
         {
             Engine.Logger.Log(Level.Debug, "Loading ShaderProgram " + this.GetHashCode() + ".");
             
             GlProgram = GL.CreateProgram();
             
             foreach (var shader in Shaders)
-                if (shader.HasValue)
-                    GL.AttachShader(GlProgram, shader.Value.GlShader);
+                if (shader != null)
+                    GL.AttachShader(GlProgram, shader.GlShader);
             
             Link();
             Validate();
         }
 
-        public void Reload()
+        public void GlReload()
         {
-            Unload();
-            Load();
+            GlUnload();
+            GlLoad();
         }
 
         private class ShaderIndex
@@ -136,6 +130,26 @@ namespace Engine.Graphics.Shader
 
                 Num++;
             }
+        }
+
+        protected internal override void GlInitialise()
+        {
+            foreach (Shader shader in Shaders)
+            {
+                shader.GlInitialise();
+            }
+            
+            GlLoad();
+
+            foreach (Shader shader in Shaders)
+            {
+                shader.GlTerminate();
+            }
+        }
+
+        protected internal override void GlTerminate()
+        {
+            throw new System.NotImplementedException();
         }
     }
 }
