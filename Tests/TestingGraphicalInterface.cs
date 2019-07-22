@@ -15,14 +15,17 @@ namespace Tests
 
         private void InitObjects()
         {
-            var vertices = new List<Vertex>
+            var vertices = new Vertex[]
             {
-                new Vertex(new Vector3(0.5f, -0.5f, 1.0f)),
-                new Vertex(new Vector3(0.0f, 0.5f, 1.0f)),
-                new Vertex(new Vector3(-0.5f, -0.5f, 1.0f))
+                new Vertex(new Vector3(0.5f, -0.5f, 1.0f)), //      0
+                new Vertex(new Vector3(0.5f, 0.5f, 1.0f)), //       1
+                new Vertex(new Vector3(-0.5f, -0.5f, 1.0f)), //     2
+                new Vertex(new Vector3(-0.5f, 0.5f, 1.0f)), //      1
+                new Vertex(new Vector3(0.5f, -0.5f, 1.0f)), //      2
+                new Vertex(new Vector3(0.5f, 0.5f, 1.0f)) //        3
             };
             
-            new Model3D(ModelManager, new Mesh3D(vertices));
+            new Model3D(ModelManager, new Mesh3D(vertices, new uint [] {0, 1, 2, 1, 2, 3} ));
         }
     }
 }

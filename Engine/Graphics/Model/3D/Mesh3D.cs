@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using OpenTK;
 using OpenTK.Graphics.OpenGL;
@@ -11,44 +10,56 @@ namespace Engine.Graphics.Model._3D
         public uint[] GlBuffers;
 
         public uint GlVao;
-
-        public int NumVertices;
-
-        readonly List<Vertex> Vertices = new List<Vertex>();
+        public uint GlElementBuffer;
         
-        public Mesh3D(List<Vertex> vertices)
+        private readonly Vertex[] Vertices;
+        private readonly uint[] Indices;
+
+        public Mesh3D(Vertex[] vertices, uint[] indices)
         {
             Vertices = vertices;
+            Indices = indices;
         }
 
         public override void Render()
         {
             GL.BindVertexArray(GlVao);
-            GL.DrawArrays(PrimitiveType.Triangles, 0, NumVertices);
+            GL.BindBuffer(BufferTarget.ElementArrayBuffer, GlElementBuffer);
+            GL.DrawElements(PrimitiveType.Triangles, Indices.Length, DrawElementsType.UnsignedInt, 0);
             GL.BindVertexArray(0);
         }
 
         protected bool Equals(Mesh3D other)
         {
-            return Equals(GlBuffers, other.GlBuffers) && GlVao == other.GlVao && NumVertices == other.NumVertices;
+            return Equals(GlBuffers, other.GlBuffers) && GlVao == other.GlVao && Indices.Length == other.Indices.Length;
         }
 
         protected internal override void GlInitialise()
         {
-            NumVertices = Vertices.Count;
-
-            var positions = new Vector3[Vertices.Count];
-            for (var i = 0; i < Vertices.Count; i++) positions[i] = Vertices[i].Position;
+            var positions = new Vector3[Vertices.Length];
+            
+            for (var i = 0; i < Vertices.Length; i++) 
+            {
+                positions[i] = Vertices[i].Position;
+            }
 
             GL.GenVertexArrays(1, out GlVao);
             GL.BindVertexArray(GlVao);
 
+            // Element Buffer
+            GL.GenBuffers(1, out GlElementBuffer);
+            GL.BindBuffer(BufferTarget.ElementArrayBuffer, GlElementBuffer);
+
+            GL.BufferData(BufferTarget.ElementArrayBuffer, Indices.Length * Marshal.SizeOf(typeof(uint)), Indices,
+                BufferUsageHint.StaticDraw);
+
+            // Vertex Buffers
             var bufferLength = Enum.GetNames(typeof(VertexBuffer)).Length;
             GlBuffers = new uint[bufferLength];
             GL.GenBuffers(bufferLength, GlBuffers);
 
             GL.BindBuffer(BufferTarget.ArrayBuffer, GlBuffers[(int) VertexBuffer.Pos]);
-            GL.BufferData(BufferTarget.ArrayBuffer, Marshal.SizeOf(typeof(Vertex)) * Vertices.Count, ref positions[0],
+            GL.BufferData(BufferTarget.ArrayBuffer, Marshal.SizeOf(typeof(Vector3)) * Indices.Length, ref positions[0],
                 BufferUsageHint.StaticDraw);
             GL.EnableVertexAttribArray((int) VertexBuffer.Pos);
             GL.VertexAttribPointer((int) VertexBuffer.Pos, 3, VertexAttribPointerType.Float, false, 0, 0);
@@ -66,6 +77,7 @@ namespace Engine.Graphics.Model._3D
             if (ReferenceEquals(null, obj)) return false;
             if (ReferenceEquals(this, obj)) return true;
             if (obj.GetType() != GetType()) return false;
+            
             return Equals((Mesh3D) obj);
         }
 

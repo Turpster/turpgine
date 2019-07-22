@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using Common;
-using Engine.Graphics.Interface;
 using Logger;
 using OpenTK.Graphics.OpenGL;
 
@@ -85,7 +84,7 @@ namespace Engine.Graphics.Shader
 
         protected internal override void GlTerminate()
         {
-            
+            throw new NotImplementedException();
         }
     }
 }
