@@ -5,6 +5,8 @@ namespace Logger.ConsoleFormat
 {
     public class ConsoleColour : ConsoleChar
     {
+        public static List<ConsoleColour> Values { get; } = new List<ConsoleColour>();
+
         public static readonly ConsoleColour
             Black = new ConsoleColour('0', ConsoleColor.Black),
             DarkBlue = new ConsoleColour('1', ConsoleColor.DarkBlue),
@@ -31,9 +33,6 @@ namespace Logger.ConsoleFormat
 
             Values.Add(this);
         }
-
-        public static List<ConsoleColour> Values { get; } = new List<ConsoleColour>();
-
 
         public override string ToString()
         {

@@ -1,5 +1,6 @@
 using System;
 using System.Runtime.InteropServices;
+using Logger;
 using OpenTK;
 using OpenTK.Graphics.OpenGL;
 
@@ -7,9 +8,29 @@ namespace Engine.Graphics.Model._3D
 {
     public class Mesh3D : Mesh
     {
-        private readonly uint[] Indices;
+        private uint[] _indices;
+        private int _numIndices;
+        
+        private Vertex[] _vertices;
 
-        private readonly Vertex[] Vertices;
+        public int[] Indices
+        {
+            get
+            {
+                // TODO Get indices from OpenGL.
+                throw new NotImplementedException();
+            }
+        }
+        
+        public int[] Vertices
+        {
+            get
+            {
+                // TODO Get vertices from OpenGL.
+                throw new NotImplementedException();
+            }
+        }
+
         public uint[] GlBuffers;
         public uint GlElementBuffer;
 
@@ -17,28 +38,28 @@ namespace Engine.Graphics.Model._3D
 
         public Mesh3D(Vertex[] vertices, uint[] indices)
         {
-            Vertices = vertices;
-            Indices = indices;
+            _vertices = vertices;
+            _indices = indices;
         }
 
         public override void Render()
         {
             GL.BindVertexArray(GlVao);
             GL.BindBuffer(BufferTarget.ElementArrayBuffer, GlElementBuffer);
-            GL.DrawElements(PrimitiveType.Triangles, Indices.Length, DrawElementsType.UnsignedInt, 0);
+            GL.DrawElements(PrimitiveType.Triangles, _numIndices, DrawElementsType.UnsignedInt, 0);
             GL.BindVertexArray(0);
         }
 
         protected bool Equals(Mesh3D other)
         {
-            return Equals(GlBuffers, other.GlBuffers) && GlVao == other.GlVao && Indices.Length == other.Indices.Length;
+            return Equals(GlBuffers, other.GlBuffers) && GlVao == other.GlVao && _indices.Length == other._indices.Length;
         }
 
         protected internal override void GlInitialise()
         {
-            var positions = new Vector3[Vertices.Length];
+            var positions = new Vector3[_vertices.Length];
 
-            for (var i = 0; i < Vertices.Length; i++) positions[i] = Vertices[i].Position;
+            for (var i = 0; i < _vertices.Length; i++) positions[i] = _vertices[i].Position;
 
             GL.GenVertexArrays(1, out GlVao);
             GL.BindVertexArray(GlVao);
@@ -46,9 +67,10 @@ namespace Engine.Graphics.Model._3D
             // Element Buffer
             GL.GenBuffers(1, out GlElementBuffer);
             GL.BindBuffer(BufferTarget.ElementArrayBuffer, GlElementBuffer);
-
-            GL.BufferData(BufferTarget.ElementArrayBuffer, Indices.Length * Marshal.SizeOf(typeof(uint)), Indices,
+            GL.BufferData(BufferTarget.ElementArrayBuffer, _indices.Length * Marshal.SizeOf(typeof(uint)), _indices,
                 BufferUsageHint.StaticDraw);
+            _numIndices = _indices.Length;
+            _indices = null;
 
             // Vertex Buffers
             var bufferLength = Enum.GetNames(typeof(VertexBuffer)).Length;
@@ -56,8 +78,10 @@ namespace Engine.Graphics.Model._3D
             GL.GenBuffers(bufferLength, GlBuffers);
 
             GL.BindBuffer(BufferTarget.ArrayBuffer, GlBuffers[(int) VertexBuffer.Pos]);
-            GL.BufferData(BufferTarget.ArrayBuffer, Marshal.SizeOf(typeof(Vector3)) * Indices.Length, ref positions[0],
+            GL.BufferData(BufferTarget.ArrayBuffer, Marshal.SizeOf(typeof(Vector3)) * _vertices.Length, ref positions[0],
                 BufferUsageHint.StaticDraw);
+            _vertices = null;
+            
             GL.EnableVertexAttribArray((int) VertexBuffer.Pos);
             GL.VertexAttribPointer((int) VertexBuffer.Pos, 3, VertexAttribPointerType.Float, false, 0, 0);
 
@@ -66,7 +90,10 @@ namespace Engine.Graphics.Model._3D
 
         protected internal override void GlDispose()
         {
-            throw new NotImplementedException();
+            GL.DeleteBuffers(1, ref GlElementBuffer);
+            GL.DeleteBuffers(Enum.GetNames(typeof(VertexBuffer)).Length, GlBuffers);
+            
+            GL.DeleteVertexArray(GlVao);
         }
 
         public override bool Equals(object obj)
