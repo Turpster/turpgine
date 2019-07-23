@@ -23,8 +23,6 @@ namespace Engine.Graphics.Interface
         {
             Window = window;
 
-            GlBackgroundColor(0.05f, 0.15f, 0.3f, 1.0f);
-
             Engine.Logger.Log(Level.Debug, "Creating new ShaderProgramManager object.");
             ShaderProgramManager = new ShaderProgramManager();
 
@@ -53,8 +51,6 @@ namespace Engine.Graphics.Interface
             Engine.Logger.Log(Level.Debug, "Adding RenderFrame method " + GetHashCode() + ".");
             Window.RenderFrame += Render;
             Window.RenderFrame += ExecuteGlActions;
-
-            GlBackgroundColor(0.05f, 0.15f, 0.3f, 1.0f);
 
             ShaderProgramManager.GlInitialise();
 
