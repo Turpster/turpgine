@@ -10,10 +10,10 @@ namespace Tests
         public TestingGraphicalInterface(GraphicalManager graphicalManager) : base(graphicalManager,
             "Testing Interface")
         {
-            InitObjects();
+            InitModels();
         }
 
-        private void InitObjects()
+        private void InitModels()
         {
             var vertices = new[]
             {

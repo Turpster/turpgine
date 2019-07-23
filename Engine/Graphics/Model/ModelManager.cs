@@ -10,7 +10,7 @@ namespace Engine.Graphics.Model
             Engine.Logger.Log(Level.Debug, "Creating Model Manager " + GetHashCode() + ".");
         }
 
-        // <GameModel Hash, GameObject>
+        // <GameModel Hash, GameModel>
         // TODO Current implementation of GetHashCode is not completely unique.
         private Dictionary<int, Model> _gameModels { get; } = new Dictionary<int, Model>();
 
@@ -18,17 +18,17 @@ namespace Engine.Graphics.Model
 
         public void Render()
         {
-            foreach (var gameObject in GameModels) gameObject.Render();
+            foreach (var gameModel in GameModels) gameModel.Render();
         }
 
         protected internal override void GlInitialise()
         {
-            foreach (var gameObject in GameModels) gameObject.GlInitialise();
+            foreach (var gameModel in GameModels) gameModel.GlInitialise();
         }
 
         protected internal override void GlDispose()
         {
-            foreach (var gameObject in GameModels) gameObject.GlDispose();
+            foreach (var gameModel in GameModels) gameModel.GlDispose();
         }
 
         protected internal void Add(Model model)
