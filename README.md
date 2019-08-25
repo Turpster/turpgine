@@ -1,4 +1,4 @@
-# Open-GL Engine
+# Turpgine
 
 [![Build Status](https://turpster.xyz/jenkins/job/open-gl/badge/icon)](https://turpster.xyz/jenkins/job/open-gl/)
 
