@@ -4,9 +4,23 @@ namespace Engine.Graphics
 {
     public abstract class GlObject : IDisposable
     {
-        protected internal abstract void GlInitialise();
-        protected internal abstract void GlDispose();
+        public bool GlInitialised = false;
+        
+        protected internal void GlInitialise()
+        {
+            GlInitialised = true;
+            _glInitialise();
+        }
 
-        public void Dispose() => GlDispose();
+        protected internal void GlDispose()
+        {
+            GlInitialised = false;
+            _glDispose();
+        }
+        
+        protected internal abstract void _glInitialise();
+        protected internal abstract void _glDispose();
+
+        public void Dispose() => _glDispose();
     }
 }

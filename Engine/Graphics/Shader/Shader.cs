@@ -90,7 +90,7 @@ namespace Engine.Graphics.Shader
             }
         }
 
-        protected internal override void GlInitialise()
+        protected internal override void _glInitialise()
         {
             GlShader = GL.CreateShader(ShaderType);
 
@@ -99,7 +99,7 @@ namespace Engine.Graphics.Shader
             Compile();
         }
 
-        protected internal override void GlDispose()
+        protected internal override void _glDispose()
         {
             GL.DeleteShader(GlShader);
         }

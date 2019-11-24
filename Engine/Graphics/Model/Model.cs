@@ -22,14 +22,14 @@ namespace Engine.Graphics.Model
             _modelManager.Remove(this);
         }
 
-        protected internal override void GlInitialise()
+        protected internal override void _glInitialise()
         {
-            _mesh.GlInitialise();
+            _mesh._glInitialise();
         }
 
-        protected internal override void GlDispose()
+        protected internal override void _glDispose()
         {
-            _mesh.GlDispose();
+            _mesh._glDispose();
         }
     }
 }

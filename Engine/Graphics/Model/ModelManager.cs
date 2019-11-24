@@ -21,14 +21,14 @@ namespace Engine.Graphics.Model
             foreach (var gameModel in GameModels) gameModel.Render();
         }
 
-        protected internal override void GlInitialise()
+        protected internal override void _glInitialise()
         {
-            foreach (var gameModel in GameModels) gameModel.GlInitialise();
+            foreach (var gameModel in GameModels) gameModel._glInitialise();
         }
 
-        protected internal override void GlDispose()
+        protected internal override void _glDispose()
         {
-            foreach (var gameModel in GameModels) gameModel.GlDispose();
+            foreach (var gameModel in GameModels) gameModel._glDispose();
         }
 
         protected internal void Add(Model model)

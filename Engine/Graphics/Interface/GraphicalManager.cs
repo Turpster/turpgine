@@ -26,7 +26,7 @@ namespace Engine.Graphics.Interface
             Engine.Logger.Log(Level.Debug, "Creating new ShaderProgramManager object.");
             ShaderProgramManager = new ShaderProgramManager();
 
-            var thread = new Thread(GlInitialise);
+            var thread = new Thread(_glInitialise);
             thread.Start();
         }
 
@@ -44,7 +44,7 @@ namespace Engine.Graphics.Interface
             Window.ProcessEvents();
         }
 
-        protected internal override void GlInitialise()
+        protected internal override void _glInitialise()
         {
             Window = new GameWindow(Window.Width, Window.Height, null, Window.Title);
 
@@ -52,9 +52,9 @@ namespace Engine.Graphics.Interface
             Window.RenderFrame += Render;
             Window.RenderFrame += ExecuteGlActions;
 
-            ShaderProgramManager.GlInitialise();
+            ShaderProgramManager._glInitialise();
 
-            foreach (var graphicalInterface in GraphicalInterfaces) graphicalInterface.Value.GlInitialise();
+            foreach (var graphicalInterface in GraphicalInterfaces) graphicalInterface.Value._glInitialise();
 
             Window.Run();
         }
@@ -71,9 +71,9 @@ namespace Engine.Graphics.Interface
             ExecuteGlActions();
         }
 
-        protected internal override void GlDispose()
+        protected internal override void _glDispose()
         {
-            foreach (var graphicalInterface in GraphicalInterfaces) graphicalInterface.Value.GlDispose();
+            foreach (var graphicalInterface in GraphicalInterfaces) graphicalInterface.Value._glDispose();
 
             _graphicalInterfaces.Clear();
 

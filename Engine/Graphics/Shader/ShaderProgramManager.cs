@@ -48,7 +48,7 @@ namespace Engine.Graphics.Shader
             _shaderPrograms.Remove(shaderProgram.GetHashCode());
         }
 
-        protected internal override void GlInitialise()
+        protected internal override void _glInitialise()
         {
             var assembly = Assembly.GetExecutingAssembly();
 
@@ -71,14 +71,14 @@ namespace Engine.Graphics.Shader
 
             var shaderProgram = new ShaderProgram(vertexShader, fragmentShader);
 
-            shaderProgram.GlInitialise();
+            shaderProgram._glInitialise();
 
             Add(shaderProgram);
 
             GlUse(shaderProgram);
         }
 
-        protected internal override void GlDispose()
+        protected internal override void _glDispose()
         {
             throw new NotImplementedException();
         }

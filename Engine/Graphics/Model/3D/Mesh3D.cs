@@ -55,7 +55,7 @@ namespace Engine.Graphics.Model._3D
             return Equals(GlBuffers, other.GlBuffers) && GlVao == other.GlVao && _indices.Length == other._indices.Length;
         }
 
-        protected internal override void GlInitialise()
+        protected internal override void _glInitialise()
         {
             var positions = new Vector3[_vertices.Length];
 
@@ -88,7 +88,7 @@ namespace Engine.Graphics.Model._3D
             GL.BindVertexArray(0);
         }
 
-        protected internal override void GlDispose()
+        protected internal override void _glDispose()
         {
             GL.DeleteBuffers(1, ref GlElementBuffer);
             GL.DeleteBuffers(Enum.GetNames(typeof(VertexBuffer)).Length, GlBuffers);

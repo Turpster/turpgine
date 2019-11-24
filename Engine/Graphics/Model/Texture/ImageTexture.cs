@@ -14,12 +14,12 @@ namespace Engine.Graphics.Model.Texture
             
         }
 
-        protected internal override void GlInitialise()
+        protected internal override void _glInitialise()
         {
             throw new System.NotImplementedException();
         }
 
-        protected internal override void GlDispose()
+        protected internal override void _glDispose()
         {
             throw new System.NotImplementedException();
         }
