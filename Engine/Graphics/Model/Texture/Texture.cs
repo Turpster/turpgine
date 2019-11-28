@@ -1,20 +1,116 @@
+using Engine.Graphics.Execution;
+using Engine.Graphics.Execution.GlEvent;
+using OpenTK.Graphics.OpenGL;
 using SixLabors.ImageSharp.PixelFormats;
-using SixLabors.ImageSharp;
 
 namespace Engine.Graphics.Model.Texture
 {
     public abstract class Texture : GlObject
     {
-        private Image Image { get; }
+        protected internal uint GlTexture;
 
-        public Texture(string url)
+
+        public GlEventTextureFilter GlTextureMinFilter
         {
-            Image = Image.Load<Rgba32>(url);
+            get
+            {
+                return GlEventHandler.GlCallSync(() =>
+                {
+                    GL.BindTexture(TextureTarget.Texture2D, GlTexture);
+                    GL.GetTexParameterI(TextureTarget.Texture2D, GetTextureParameter.TextureMinFilter,
+                        out int textureFilter);
+                    return new GlEventTextureFilter((TextureMinFilter) textureFilter);
+                });
+            }
+            set
+            {
+                GL.BindTexture(TextureTarget.Texture2D, GlTexture);
+                GL.TexParameterI(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter, new [] {(int) value.TextureMinFilter});
+            }
         }
 
-        public Texture(Image image)
+        public GlEventTextureFilter GlTextureMagFilter
         {
-            Image = image;
+            get
+            {
+                return GlEventHandler.GlCallSync(() =>
+                {
+                    GL.BindTexture(TextureTarget.Texture2D, GlTexture);
+                    GL.GetTexParameterI(TextureTarget.Texture2D, GetTextureParameter.TextureMagFilter,
+                        out int textureFilter);
+                    return new GlEventTextureFilter((TextureMagFilter) textureFilter);
+                });
+            }
+            set
+            {
+                GlEventHandler.GlCall(() =>
+                {
+                    GL.BindTexture(TextureTarget.Texture2D, GlTexture);
+                    GL.TexParameterI(TextureTarget.Texture2D, TextureParameterName.TextureMagFilter,
+                        new[] {(int) value.TextureMagFilter});
+                });
+            }
+        }
+
+        public TextureWrapMode GlWrapModeX
+        {
+            set
+            {
+                GL.BindTexture(TextureTarget.Texture2D, GlTexture);
+                GL.TexParameterI(TextureTarget.Texture2D, TextureParameterName.TextureWrapS, new [] { (int) value });
+            }
+            get
+            {
+                GL.BindTexture(TextureTarget.Texture2D, GlTexture);
+                GL.GetTexParameterI(TextureTarget.Texture2D, GetTextureParameter.TextureWrapS, out int wrapMode);
+                return (TextureWrapMode) wrapMode;
+            }
+        }
+        
+        public TextureWrapMode GlWrapModeY
+        {
+            set
+            {
+                GL.BindTexture(TextureTarget.Texture2D, GlTexture);
+                GL.TexParameterI(TextureTarget.Texture2D, TextureParameterName.TextureWrapT, new [] { (int) value });
+            }
+            get
+            {
+                GL.BindTexture(TextureTarget.Texture2D, GlTexture);
+                GL.GetTexParameterI(TextureTarget.Texture2D, GetTextureParameter.TextureWrapT, out int warpMode);
+                return (TextureWrapMode) warpMode;
+            }
+        }
+
+        public Rgba32 GlBorderColor
+        {
+            set
+            {
+                GL.BindTexture(TextureTarget.Texture2D, GlTexture);
+                float[] borderColor = {value.R, value.G, value.B, value.A};
+                GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureBorderColor, borderColor);
+            }
+            get
+            {
+                GL.BindTexture(TextureTarget.Texture2D, GlTexture);
+                float[] borderColor = new float[4];
+                GL.GetTexParameter(TextureTarget.Texture2D, GetTextureParameter.TextureBorderColor, borderColor);
+                return new Rgba32(borderColor[0], borderColor[1], borderColor[2], borderColor[3]);
+            }
+        }
+
+        protected internal override void _glInitialise()
+        {
+            GlWrapModeX = TextureWrapMode.Repeat;
+            GlWrapModeY = TextureWrapMode.Repeat;
+
+            GlTextureMinFilter = new GlEventTextureFilter(TextureMagFilter.Linear);
+            GlTextureMagFilter = new GlEventTextureFilter(TextureMagFilter.Linear);
+        }
+
+        protected internal override void _glDispose()
+        {
+            throw new System.NotImplementedException();
         }
     }
 }

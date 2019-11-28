@@ -1,27 +1,14 @@
-using SixLabors.ImageSharp;
+using OpenTK.Graphics.OpenGL;
 
 namespace Engine.Graphics.Model.Texture
 {
     public class ImageTexture : Texture
     {
-        public ImageTexture(string url) : base(url)
-        {
-            
-        }
+        public string Url;
 
-        public ImageTexture(Image image) : base(image)
+        public ImageTexture(string url)
         {
-            
-        }
-
-        protected internal override void _glInitialise()
-        {
-            throw new System.NotImplementedException();
-        }
-
-        protected internal override void _glDispose()
-        {
-            throw new System.NotImplementedException();
+            Url = url;
         }
     }
 }
