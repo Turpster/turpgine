@@ -11,18 +11,18 @@ namespace Engine.Graphics.Interface
 {
     public class GraphicalManager : GlObject, IRenderable
     {
-        public static readonly List<Action> GlActions = new List<Action>();
+        public GlEventHandler GlEventHandler;
 
         protected internal Dictionary<string, GraphicalInterface> _graphicalInterfaces =
             new Dictionary<string, GraphicalInterface>();
 
         public ShaderProgramManager ShaderProgramManager;
 
-        private GameWindow Window;
+        private GameWindow _window;
 
         public GraphicalManager(GameWindow window)
         {
-            Window = window;
+            _window = window;
 
             Engine.Logger.Log(Level.Debug, "Creating new ShaderProgramManager object.");
             ShaderProgramManager = new ShaderProgramManager();
@@ -37,39 +37,26 @@ namespace Engine.Graphics.Interface
         public void Render()
         {
             GL.Clear(ClearBufferMask.ColorBufferBit);
+            
+            GlEventHandler.GlRender();
+            
+            _window.SwapBuffers();
 
-            foreach (var graphicalInterface in GraphicalInterfaces) graphicalInterface.Value.Render();
-
-            Window.SwapBuffers();
-
-            Window.ProcessEvents();
+            _window.ProcessEvents();
         }
 
         protected internal override void _glInitialise()
         {
-            Window = new GameWindow(Window.Width, Window.Height, null, Window.Title);
+            _window = new GameWindow(_window.Width, _window.Height, null, _window.Title);
 
             Engine.Logger.Log(Level.Debug, "Adding RenderFrame method " + GetHashCode() + ".");
-            Window.RenderFrame += Render;
-            Window.RenderFrame += ExecuteGlActions;
+            _window.RenderFrame += Render;
 
             ShaderProgramManager._glInitialise();
 
             foreach (var graphicalInterface in GraphicalInterfaces) graphicalInterface.Value._glInitialise();
 
-            Window.Run();
-        }
-
-        private void ExecuteGlActions()
-        {
-            foreach (var action in GlActions) action();
-
-            GlActions.Clear();
-        }
-
-        private void ExecuteGlActions(object w, FrameEventArgs e)
-        {
-            ExecuteGlActions();
+            _window.Run();
         }
 
         protected internal override void _glDispose()
@@ -78,7 +65,7 @@ namespace Engine.Graphics.Interface
 
             _graphicalInterfaces.Clear();
 
-            Window.Exit();
+            _window.Exit();
         }
 
         private void Render(object w, FrameEventArgs e)
