@@ -29,9 +29,8 @@ namespace Engine.Graphics.Shader
             get
             {
                 Engine.Logger.Log(Level.Debug, "Getting Shader Source for shader " + GetHashCode() + ".");
-
-                var source = new StringBuilder();
-                GL.GetShaderSource(GlShader, 1, out _, source);
+                
+                GL.GetShaderSource(GlShader, 1, out _, out string source);
                 return source.ToString();
             }
             set
