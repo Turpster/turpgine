@@ -1,14 +1,13 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using Engine.Graphics.Execution.GlEvent;
 
 namespace Engine.Graphics.Execution
 {
     public class GlEventHandler 
     {
-        protected internal static Queue<GlAction> GlActions;
-        protected internal static Queue<GlFunc<GlEvent.IGlEvent>> GlFuncs;
+        protected internal static Queue<GlAction> GlActions = new Queue<GlAction>();
+        protected internal static Queue<GlFunc<IGlEvent>> GlFuncs = new Queue<GlFunc<IGlEvent>>();
         
         protected internal void GlRender()
         {
@@ -32,11 +31,6 @@ namespace Engine.Graphics.Execution
         protected internal void GlEnqueue(GlFunc<GlEvent.IGlEvent> glAction)
         {
             GlFuncs.Enqueue(glAction);
-        }
-
-        public void Execute()
-        {
-            
         }
 
         public static void GlCall(Action action)

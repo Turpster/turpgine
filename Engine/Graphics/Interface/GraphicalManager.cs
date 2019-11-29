@@ -24,6 +24,8 @@ namespace Engine.Graphics.Interface
         {
             _window = window;
 
+            GlEventHandler = new GlEventHandler();
+            
             Engine.Logger.Log(Level.Debug, "Creating new ShaderProgramManager object.");
             ShaderProgramManager = new ShaderProgramManager();
 

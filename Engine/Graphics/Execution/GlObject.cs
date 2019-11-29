@@ -16,14 +16,14 @@ namespace Engine.Graphics.Execution
 
         protected internal void GlInitialise()
         {
-            GlInitialised = true;
             _glInitialise();
+            GlInitialised = true;
         }
 
         protected internal void GlDispose()
         {
-            GlInitialised = false;
             _glDispose();
+            GlInitialised = false;
         }
 
         protected internal abstract void _glInitialise();

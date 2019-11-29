@@ -9,7 +9,6 @@ namespace Engine.Graphics.Model.Texture
     {
         protected internal uint GlTexture;
 
-
         public GlEventTextureFilter GlTextureMinFilter
         {
             get
