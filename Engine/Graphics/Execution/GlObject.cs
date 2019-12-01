@@ -1,17 +1,20 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Serialization;
 using Engine.Graphics.Interface;
 
 namespace Engine.Graphics.Execution
 {
-    public abstract class GlObject : IDisposable 
+    public abstract class GlObject : IDisposable
     {
         public bool GlInitialised = false;
         
+        private static ObjectIDGenerator _idGenerator = new ObjectIDGenerator();
+        
         public GlObject()
         {
-            GlEventHandler.GlActions.Enqueue(new GlAction(GlInitialise));
+            GlEventHandler.UninitGlObjects.Add(this, new GlAction(GlInitialise));
         }
 
         internal void GlInitialise()

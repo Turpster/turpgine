@@ -8,6 +8,8 @@ namespace Engine.Graphics.Execution
     {
         protected internal static Queue<GlAction> GlActions = new Queue<GlAction>();
         protected internal static Queue<GlFunc<IGlEvent>> GlFuncs = new Queue<GlFunc<IGlEvent>>();
+
+        protected internal static Dictionary<GlObject, GlAction> UninitGlObjects = new Dictionary<GlObject, GlAction>(new GlObjectEqualityComparer());
         
         protected internal void GlRender()
         {
@@ -20,6 +22,22 @@ namespace Engine.Graphics.Execution
             {
                 glAction.Action();
                 glAction._signal.Set();
+            }
+            
+            List<GlObject> initGlObjects = new List<GlObject>();
+            
+            foreach (var uninitGlObject in UninitGlObjects)
+            {
+                if (uninitGlObject.Key != null)
+                {
+                    uninitGlObject.Value.Queue();
+                    initGlObjects.Add(uninitGlObject.Key);
+                }
+            }
+
+            foreach (var initObject in initGlObjects)
+            {
+                UninitGlObjects.Remove(initObject);
             }
         }
 
