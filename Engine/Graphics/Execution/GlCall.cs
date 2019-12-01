@@ -5,7 +5,7 @@ namespace Engine.Graphics.Execution
 {
     public abstract class GlCall : IDisposable
     {
-        public readonly ManualResetEventSlim _signal;
+        public readonly ManualResetEventSlim _signal = new ManualResetEventSlim();
 
         public void Dispose()
         {
