@@ -49,39 +49,42 @@ namespace Engine.Graphics.Shader
             _shaderPrograms.Remove(shaderProgram.GetHashCode());
         }
 
-        protected internal override void _glInitialise()
+        protected internal override GlAction _glInitialise()
         {
-            var assembly = Assembly.GetExecutingAssembly();
+            return new GlAction(() =>
+            {
+                var assembly = Assembly.GetExecutingAssembly();
 
-            var vertexShaderResource = "Engine.Graphics.Shader.GLSL.vertex-shader.vert";
-            var fragmentShaderResource = "Engine.Graphics.Shader.GLSL.fragment-shader.frag";
+                var vertexShaderResource = "Engine.Graphics.Shader.GLSL.vertex-shader.vert";
+                var fragmentShaderResource = "Engine.Graphics.Shader.GLSL.fragment-shader.frag";
 
-            Engine.Logger.Log(Level.Debug, "Loading resource '" + vertexShaderResource + "'.");
-            var vertexShader =
-                new Shader(
-                    StreamUtil.ReadStringStream(
-                        assembly.GetManifestResourceStream(vertexShaderResource)),
-                    "vertex-shader.vert", ShaderType.VertexShader);
+                Engine.Logger.Log(Level.Debug, "Loading resource '" + vertexShaderResource + "'.");
+                var vertexShader =
+                    new Shader(
+                        StreamUtil.ReadStringStream(
+                            assembly.GetManifestResourceStream(vertexShaderResource)),
+                        "vertex-shader.vert", ShaderType.VertexShader);
 
-            Engine.Logger.Log(Level.Debug, "Loading resource '" + fragmentShaderResource + "'.");
-            var fragmentShader =
-                new Shader(
-                    StreamUtil.ReadStringStream(
-                        assembly.GetManifestResourceStream(fragmentShaderResource)),
-                    "fragment-shader.frag", ShaderType.FragmentShader);
+                Engine.Logger.Log(Level.Debug, "Loading resource '" + fragmentShaderResource + "'.");
+                var fragmentShader =
+                    new Shader(
+                        StreamUtil.ReadStringStream(
+                            assembly.GetManifestResourceStream(fragmentShaderResource)),
+                        "fragment-shader.frag", ShaderType.FragmentShader);
 
-            var shaderProgram = new ShaderProgram(vertexShader, fragmentShader);
+                var shaderProgram = new ShaderProgram(vertexShader, fragmentShader);
 
-            shaderProgram._glInitialise();
+                shaderProgram._glInitialise();
 
-            Add(shaderProgram);
+                Add(shaderProgram);
 
-            GlUse(shaderProgram);
+                GlUse(shaderProgram);
+            });
         }
 
-        protected internal override void _glDispose()
+        protected internal override GlAction _glDispose()
         {
-            throw new NotImplementedException();
+            return new GlAction(() => { throw new NotImplementedException(); });
         }
     }
 }

@@ -24,14 +24,20 @@ namespace Engine.Graphics.Model
             _modelManager.Remove(this);
         }
 
-        protected internal override void _glInitialise()
+        protected internal override GlAction _glInitialise()
         {
-            _mesh._glInitialise();
+            return new GlAction(() =>
+            {
+                _mesh._glInitialise();
+            });
         }
 
-        protected internal override void _glDispose()
+        protected internal override GlAction _glDispose()
         {
-            _mesh._glDispose();
+            return new GlAction(() =>
+            {
+                _mesh.GlDispose();
+            });
         }
     }
 }

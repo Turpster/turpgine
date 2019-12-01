@@ -34,14 +34,16 @@ namespace Engine.Graphics.Interface
             _graphicalManager._graphicalInterfaces.Remove(Name);
         }
 
-        protected internal override void _glInitialise()
+        protected internal override GlAction _glInitialise()
         {
-            ModelManager._glInitialise();
+            return new GlAction(() => { ModelManager._glInitialise(); });
         }
-
-        protected internal override void _glDispose()
+        protected internal override GlAction _glDispose()
         {
-            ModelManager._glDispose();
+            return new GlAction(() =>
+            {
+                ModelManager._glDispose();
+            });
         }
 
         public void Add(Model.Model obj)

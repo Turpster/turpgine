@@ -1,5 +1,6 @@
 using System;
 using System.Runtime.InteropServices;
+using Engine.Graphics.Execution;
 using Logger;
 using OpenTK;
 using OpenTK.Graphics.OpenGL;
@@ -55,45 +56,51 @@ namespace Engine.Graphics.Model._3D
             return Equals(GlBuffers, other.GlBuffers) && GlVao == other.GlVao && _indices.Length == other._indices.Length;
         }
 
-        protected internal override void _glInitialise()
+        protected internal override GlAction _glInitialise()
         {
-            var positions = new Vector3[_vertices.Length];
+            return new GlAction(() =>
+            {
+                var positions = new Vector3[_vertices.Length];
 
-            for (var i = 0; i < _vertices.Length; i++) positions[i] = _vertices[i].Position;
+                for (var i = 0; i < _vertices.Length; i++) positions[i] = _vertices[i].Position;
 
-            GL.GenVertexArrays(1, out GlVao);
-            GL.BindVertexArray(GlVao);
+                GL.GenVertexArrays(1, out GlVao);
+                GL.BindVertexArray(GlVao);
 
-            // Element Buffer
-            GL.GenBuffers(1, out GlElementBuffer);
-            GL.BindBuffer(BufferTarget.ElementArrayBuffer, GlElementBuffer);
-            GL.BufferData(BufferTarget.ElementArrayBuffer, _indices.Length * Marshal.SizeOf(typeof(uint)), _indices,
-                BufferUsageHint.StaticDraw);
-            _numIndices = _indices.Length;
-            _indices = null;
+                // Element Buffer
+                GL.GenBuffers(1, out GlElementBuffer);
+                GL.BindBuffer(BufferTarget.ElementArrayBuffer, GlElementBuffer);
+                GL.BufferData(BufferTarget.ElementArrayBuffer, _indices.Length * Marshal.SizeOf(typeof(uint)), _indices,
+                    BufferUsageHint.StaticDraw);
+                _numIndices = _indices.Length;
+                _indices = null;
 
-            // Vertex Buffers
-            var bufferLength = Enum.GetNames(typeof(VertexBuffer)).Length;
-            GlBuffers = new uint[bufferLength];
-            GL.GenBuffers(bufferLength, GlBuffers);
+                // Vertex Buffers
+                var bufferLength = Enum.GetNames(typeof(VertexBuffer)).Length;
+                GlBuffers = new uint[bufferLength];
+                GL.GenBuffers(bufferLength, GlBuffers);
 
-            GL.BindBuffer(BufferTarget.ArrayBuffer, GlBuffers[(int) VertexBuffer.Pos]);
-            GL.BufferData(BufferTarget.ArrayBuffer, Marshal.SizeOf(typeof(Vector3)) * _vertices.Length, ref positions[0],
-                BufferUsageHint.StaticDraw);
-            _vertices = null;
-            
-            GL.EnableVertexAttribArray((int) VertexBuffer.Pos);
-            GL.VertexAttribPointer((int) VertexBuffer.Pos, 3, VertexAttribPointerType.Float, false, 0, 0);
+                GL.BindBuffer(BufferTarget.ArrayBuffer, GlBuffers[(int) VertexBuffer.Pos]);
+                GL.BufferData(BufferTarget.ArrayBuffer, Marshal.SizeOf(typeof(Vector3)) * _vertices.Length, ref positions[0],
+                    BufferUsageHint.StaticDraw);
+                _vertices = null;
+                
+                GL.EnableVertexAttribArray((int) VertexBuffer.Pos);
+                GL.VertexAttribPointer((int) VertexBuffer.Pos, 3, VertexAttribPointerType.Float, false, 0, 0);
 
-            GL.BindVertexArray(0);
+                GL.BindVertexArray(0);
+            });
         }
 
-        protected internal override void _glDispose()
+        protected internal override GlAction _glDispose()
         {
-            GL.DeleteBuffers(1, ref GlElementBuffer);
-            GL.DeleteBuffers(Enum.GetNames(typeof(VertexBuffer)).Length, GlBuffers);
+            return new GlAction(() =>
+            {
+                GL.DeleteBuffers(1, ref GlElementBuffer);
+                GL.DeleteBuffers(Enum.GetNames(typeof(VertexBuffer)).Length, GlBuffers);
             
-            GL.DeleteVertexArray(GlVao);
+                GL.DeleteVertexArray(GlVao);
+            });
         }
 
         public override bool Equals(object obj)

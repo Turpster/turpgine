@@ -16,7 +16,7 @@ namespace Engine.Graphics.Execution
 
         protected internal void GlInitialise()
         {
-            _glInitialise();
+            GlEventHandler.GlCall(_glInitialise());
             GlInitialised = true;
         }
 
@@ -26,8 +26,8 @@ namespace Engine.Graphics.Execution
             GlInitialised = false;
         }
 
-        protected internal abstract void _glInitialise();
-        protected internal abstract void _glDispose();
+        protected internal abstract GlAction _glInitialise();
+        protected internal abstract GlAction _glDispose();
 
         public void Dispose() => new GlAction(GlDispose).Queue();
     }

@@ -90,18 +90,24 @@ namespace Engine.Graphics.Shader
             }
         }
 
-        protected internal override void _glInitialise()
+        protected internal override GlAction _glInitialise()
         {
-            GlShader = GL.CreateShader(ShaderType);
+            return new GlAction(() =>
+            {
+                GlShader = GL.CreateShader(ShaderType);
 
-            GL.ShaderSource(GlShader, ShaderSource);
+                GL.ShaderSource(GlShader, ShaderSource);
 
-            Compile();
+                Compile();
+            });
         }
 
-        protected internal override void _glDispose()
+        protected internal override GlAction _glDispose()
         {
-            GL.DeleteShader(GlShader);
+            return new GlAction(() =>
+            {
+                GL.DeleteShader(GlShader);
+            });
         }
     }
 }

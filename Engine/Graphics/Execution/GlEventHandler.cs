@@ -37,10 +37,19 @@ namespace Engine.Graphics.Execution
         {
             new GlAction(action).Queue();
         }
+        public static void GlCall(GlAction action)
+        {
+            action.Queue();
+        }
 
         public static void GlCallSync(Action action)
         {
             new GlAction(action).QueueSync();
+        }
+        
+        public static void GlCallSync(GlAction action)
+        {
+            action.QueueSync();
         }
         
         public static void GlCall<T>(Func<T> func)
@@ -48,6 +57,7 @@ namespace Engine.Graphics.Execution
         {
             new GlFunc<T>(func).Queue();
         }
+        
 
         public static T GlCallSync<T>(Func<T> func)
             where T : IGlEvent

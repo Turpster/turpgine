@@ -111,18 +111,24 @@ namespace Engine.Graphics.Shader
             GlLoad();
         }
 
-        protected internal override void _glInitialise()
+        protected internal override GlAction _glInitialise()
         {
-            foreach (var shader in Shaders) shader._glInitialise();
+            return new GlAction(() =>
+            {
+                foreach (var shader in Shaders) shader._glInitialise();
 
-            GlLoad();
+                GlLoad();
 
-            foreach (var shader in Shaders) shader._glDispose();
+                foreach (var shader in Shaders) shader._glDispose();
+            });
         }
 
-        protected internal override void _glDispose()
+        protected internal override GlAction _glDispose()
         {
-            throw new NotImplementedException();
+            return new GlAction(() =>
+            { 
+                throw new NotImplementedException();
+            });
         }
 
         private class ShaderIndex

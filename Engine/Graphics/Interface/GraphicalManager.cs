@@ -47,27 +47,33 @@ namespace Engine.Graphics.Interface
             _window.ProcessEvents();
         }
 
-        protected internal override void _glInitialise()
+        protected internal override GlAction _glInitialise()
         {
-            _window = new GameWindow(_window.Width, _window.Height, null, _window.Title);
+            return new GlAction(() =>
+            {
+                _window = new GameWindow(_window.Width, _window.Height, null, _window.Title);
 
-            Engine.Logger.Log(Level.Debug, "Adding RenderFrame method " + GetHashCode() + ".");
-            _window.RenderFrame += Render;
+                Engine.Logger.Log(Level.Debug, "Adding RenderFrame method " + GetHashCode() + ".");
+                _window.RenderFrame += Render;
 
-            ShaderProgramManager._glInitialise();
+                ShaderProgramManager._glInitialise();
 
-            foreach (var graphicalInterface in GraphicalInterfaces) graphicalInterface.Value._glInitialise();
+                foreach (var graphicalInterface in GraphicalInterfaces) graphicalInterface.Value._glInitialise();
 
-            _window.Run();
+                _window.Run();
+            });
         }
 
-        protected internal override void _glDispose()
+        protected internal override GlAction _glDispose()
         {
-            foreach (var graphicalInterface in GraphicalInterfaces) graphicalInterface.Value._glDispose();
+            return new GlAction(() =>
+            {
+                foreach (var graphicalInterface in GraphicalInterfaces) graphicalInterface.Value._glDispose();
 
-            _graphicalInterfaces.Clear();
+                _graphicalInterfaces.Clear();
 
-            _window.Exit();
+                _window.Exit();
+            });
         }
 
         private void Render(object w, FrameEventArgs e)

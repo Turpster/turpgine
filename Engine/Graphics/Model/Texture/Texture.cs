@@ -98,16 +98,19 @@ namespace Engine.Graphics.Model.Texture
             }
         }
 
-        protected internal override void _glInitialise()
+        protected internal override GlAction _glInitialise()
         {
-            GlWrapModeX = TextureWrapMode.Repeat;
-            GlWrapModeY = TextureWrapMode.Repeat;
+            return new GlAction(() =>
+            {
+                GlWrapModeX = TextureWrapMode.Repeat;
+                GlWrapModeY = TextureWrapMode.Repeat;
 
-            GlTextureMinFilter = new GlEventTextureFilter(TextureMagFilter.Linear);
-            GlTextureMagFilter = new GlEventTextureFilter(TextureMagFilter.Linear);
+                GlTextureMinFilter = new GlEventTextureFilter(TextureMagFilter.Linear);
+                GlTextureMagFilter = new GlEventTextureFilter(TextureMagFilter.Linear);
+            });
         }
 
-        protected internal override void _glDispose()
+        protected internal override GlAction _glDispose()
         {
             throw new System.NotImplementedException();
         }
