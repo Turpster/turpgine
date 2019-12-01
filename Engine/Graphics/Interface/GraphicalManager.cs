@@ -47,7 +47,7 @@ namespace Engine.Graphics.Interface
             _window.ProcessEvents();
         }
 
-        protected internal override GlAction _glInitialise()
+        protected void _glInitialise()
         {
             return new GlAction(() =>
             {
@@ -64,7 +64,7 @@ namespace Engine.Graphics.Interface
             });
         }
 
-        protected internal override GlAction _glDispose()
+        protected void _glDispose()
         {
             return new GlAction(() =>
             {

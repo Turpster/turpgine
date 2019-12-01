@@ -14,20 +14,25 @@ namespace Engine.Graphics.Execution
             GlEventHandler.GlActions.Enqueue(new GlAction(GlInitialise));
         }
 
-        protected internal void GlInitialise()
+        internal void GlInitialise()
         {
             GlEventHandler.GlCall(_glInitialise());
             GlInitialised = true;
         }
 
-        protected internal void GlDispose()
+        internal void GlDispose()
         {
             _glDispose();
             GlInitialised = false;
         }
 
-        protected internal abstract GlAction _glInitialise();
-        protected internal abstract GlAction _glDispose();
+        protected abstract GlAction _glInitialise();
+        protected abstract GlAction _glDispose();
+
+        public long GetId()
+        {
+            return _idGenerator.GetId(this, out _);
+        }
 
         public void Dispose() => new GlAction(GlDispose).Queue();
     }

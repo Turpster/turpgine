@@ -97,8 +97,8 @@ namespace Engine.Graphics.Model.Texture
                 return new Rgba32(borderColor[0], borderColor[1], borderColor[2], borderColor[3]);
             }
         }
-
-        protected internal override GlAction _glInitialise()
+        
+        protected override GlAction _glInitialise() 
         {
             return new GlAction(() =>
             {
@@ -109,10 +109,10 @@ namespace Engine.Graphics.Model.Texture
                 GlTextureMagFilter = new GlEventTextureFilter(TextureMagFilter.Linear);
             });
         }
-
-        protected internal override GlAction _glDispose()
+        
+        protected override GlAction _glDispose()
         {
-            throw new System.NotImplementedException();
+            return new GlAction(() => throw new NotImplementedException());
         }
     }
 }

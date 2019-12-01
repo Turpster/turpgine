@@ -90,7 +90,8 @@ namespace Engine.Graphics.Shader
             }
         }
 
-        protected internal override GlAction _glInitialise()
+
+        protected override GlAction _glInitialise()
         {
             return new GlAction(() =>
             {
@@ -102,7 +103,8 @@ namespace Engine.Graphics.Shader
             });
         }
 
-        protected internal override GlAction _glDispose()
+
+        protected override GlAction _glDispose()
         {
             return new GlAction(() =>
             {

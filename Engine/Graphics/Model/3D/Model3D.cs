@@ -6,9 +6,19 @@ namespace Engine.Graphics.Model._3D
         {
         }
 
-        public override void Render()
+        public override void Tick()
         {
-            _mesh.Render();
+            _mesh.Tick();
+        }
+
+        protected override GlAction _glInitialise()
+        {
+            return new GlAction(() => throw new NotImplementedException());
+        }
+        
+        protected override GlAction _glDispose()
+        {
+            return new GlAction(() => throw new NotImplementedException());
         }
     }
 }

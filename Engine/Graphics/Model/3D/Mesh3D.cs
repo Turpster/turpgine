@@ -56,7 +56,7 @@ namespace Engine.Graphics.Model._3D
             return Equals(GlBuffers, other.GlBuffers) && GlVao == other.GlVao && _indices.Length == other._indices.Length;
         }
 
-        protected internal override GlAction _glInitialise()
+        protected override GlAction _glInitialise()
         {
             return new GlAction(() =>
             {
@@ -92,7 +92,7 @@ namespace Engine.Graphics.Model._3D
             });
         }
 
-        protected internal override GlAction _glDispose()
+        protected override GlAction _glDispose()
         {
             return new GlAction(() =>
             {
