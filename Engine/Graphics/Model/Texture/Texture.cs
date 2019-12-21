@@ -1,5 +1,6 @@
-using Engine.Graphics.Execution;
-using Engine.Graphics.Execution.GlEvent;
+using System;
+using Engine.Graphics.Scheduler;
+using Engine.Graphics.Scheduler.GlEvent;
 using OpenTK.Graphics.OpenGL;
 using SixLabors.ImageSharp.PixelFormats;
 
@@ -8,18 +9,23 @@ namespace Engine.Graphics.Model.Texture
     public abstract class Texture : GlObject
     {
         protected internal uint GlTexture;
+        
+        protected Texture(Mesh mesh) : base(mesh.Model._modelManager)
+        {
+            
+        }
 
         public GlEventTextureFilter GlTextureMinFilter
         {
             get
             {
-                return GlEventHandler.GlCallSync(() =>
+                return GlRenderHandler.GlCallSync(() =>
                 {
                     GL.BindTexture(TextureTarget.Texture2D, GlTexture);
                     GL.GetTexParameterI(TextureTarget.Texture2D, GetTextureParameter.TextureMinFilter,
                         out int textureFilter);
                     return new GlEventTextureFilter((TextureMinFilter) textureFilter);
-                });
+                })._value;
             }
             set
             {
@@ -32,17 +38,17 @@ namespace Engine.Graphics.Model.Texture
         {
             get
             {
-                return GlEventHandler.GlCallSync(() =>
+                return GlRenderHandler.GlCallSync(() =>
                 {
                     GL.BindTexture(TextureTarget.Texture2D, GlTexture);
                     GL.GetTexParameterI(TextureTarget.Texture2D, GetTextureParameter.TextureMagFilter,
                         out int textureFilter);
                     return new GlEventTextureFilter((TextureMagFilter) textureFilter);
-                });
+                })._value;
             }
             set
             {
-                GlEventHandler.GlCall(() =>
+                GlRenderHandler.GlCall(() =>
                 {
                     GL.BindTexture(TextureTarget.Texture2D, GlTexture);
                     GL.TexParameterI(TextureTarget.Texture2D, TextureParameterName.TextureMagFilter,
@@ -97,10 +103,10 @@ namespace Engine.Graphics.Model.Texture
                 return new Rgba32(borderColor[0], borderColor[1], borderColor[2], borderColor[3]);
             }
         }
-        
-        protected override GlAction _glInitialise() 
+
+        public override GlCallResult _glInitialise()
         {
-            return new GlAction(() =>
+            return GlRenderHandler.GlCall(() =>
             {
                 GlWrapModeX = TextureWrapMode.Repeat;
                 GlWrapModeY = TextureWrapMode.Repeat;
@@ -109,10 +115,10 @@ namespace Engine.Graphics.Model.Texture
                 GlTextureMagFilter = new GlEventTextureFilter(TextureMagFilter.Linear);
             });
         }
-        
-        protected override GlAction _glDispose()
+
+        public override GlCallResult _glDispose()
         {
-            return new GlAction(() => throw new NotImplementedException());
+            return GlRenderHandler.GlCall(() => throw new NotImplementedException());
         }
     }
 }

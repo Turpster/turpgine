@@ -4,9 +4,9 @@
     {
         private static void Main(string[] args)
         {
-            var engine = new Engine.Engine();
+            var turpgine = new Engine.Turpgine();
 
-            var testGraphicalInterface = new TestingGraphicalInterface(engine.GraphicalManager);
+            var testGraphicalInterface = new TestingGraphicalInterface(turpgine);
         }
     }
 }

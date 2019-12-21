@@ -1,14 +1,19 @@
+using System;
 using System.Collections.Generic;
-using Engine.Graphics.Execution;
+using Engine.Graphics.Interface;
+using Engine.Graphics.Scheduler;
 using Logger;
+using OpenTK.Graphics.OpenGL;
+
 
 namespace Engine.Graphics.Model
 {
-    public class ModelManager : GlObject, IRenderable
+    public class ModelManager : GlRenderHandler
     {
-        public ModelManager()
+        public ModelManager(GraphicalInterfaceManager glGraphicalInterfaceManager) 
+            : base(glGraphicalInterfaceManager)
         {
-            Engine.Logger.Log(Level.Debug, "Creating Model Manager " + GetHashCode() + ".");
+            Turpgine.Logger.Log(Level.Debug, "Creating Model Manager " + GetHashCode() + ".");
         }
 
         // <GameModel Hash, GameModel>
@@ -16,28 +21,6 @@ namespace Engine.Graphics.Model
         private Dictionary<int, Model> _gameModels { get; } = new Dictionary<int, Model>();
 
         public Dictionary<int, Model>.ValueCollection GameModels => _gameModels.Values;
-
-        public void Render()
-        {
-            foreach (var gameModel in GameModels) gameModel.Render();
-        }
-
-        protected internal override GlAction _glInitialise()
-        {
-            return new GlAction(() =>
-            {
-                foreach (var gameModel in GameModels) gameModel._glInitialise();
-            });
-            
-        }
-
-        protected internal override GlAction _glDispose()
-        {
-            return new GlAction(() =>
-            {
-                foreach (var gameModel in GameModels) gameModel._glDispose();
-            });
-        }
 
         protected internal void Add(Model model)
         {
@@ -47,6 +30,19 @@ namespace Engine.Graphics.Model
         protected internal void Remove(Model model)
         {
             _gameModels.Remove(model.GetHashCode());
+        }
+
+        public override GlCallResult _glInitialise()
+        {
+            return GlCall(() =>
+            {
+                GL.ClearColor(0.05f, 0.15f, 0.3f, 1.0f);
+            });
+        }
+
+        public override GlCallResult _glDispose()
+        {
+            throw new NotImplementedException();
         }
     }
 }

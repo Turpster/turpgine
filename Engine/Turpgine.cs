@@ -1,11 +1,11 @@
 using System;
 using Engine.Graphics.Interface;
+using Engine.Graphics.Scheduler;
 using Logger;
-using OpenTK;
 
 namespace Engine
 {
-    public class Engine
+    public class Turpgine
     {
         public static readonly Logger.Logger Logger = new Logger.Logger(
             #if DEBUG
@@ -15,23 +15,16 @@ namespace Engine
             #endif
         );
 
-        public readonly GraphicalManager GraphicalManager;
+        internal readonly GraphicalInterfaceManager GraphicalInterfaceManager;
+        internal readonly GlMasterRenderHandler glMasterRenderHandler;
 
-        public readonly GameWindow Window;
-
-        public Engine(GameWindow window)
+        public Turpgine()
         {
             SetupLogger();
-
-            Window = window;
+            glMasterRenderHandler = new GlMasterRenderHandler(800, 600, "Hello, World!");
 
             Logger.Log(Level.Debug, "Creating new GraphicalManager object.");
-            GraphicalManager = new GraphicalManager(Window);
-        }
-
-        public Engine(int width = 600, int height = 600, string title = "Open-GL Engine") : this(new GameWindow(width,
-            height, null, title))
-        {
+            GraphicalInterfaceManager = new GraphicalInterfaceManager(glMasterRenderHandler);
         }
 
         private void SetupLogger()

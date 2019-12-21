@@ -1,6 +1,6 @@
 using OpenTK.Graphics.OpenGL;
 
-namespace Engine.Graphics.Execution.GlEvent
+namespace Engine.Graphics.Scheduler.GlEvent
 {
     public struct GlEventTextureFilter : IGlEvent
     {

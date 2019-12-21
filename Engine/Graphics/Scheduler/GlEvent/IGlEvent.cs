@@ -1,4 +1,4 @@
-namespace Engine.Graphics.Execution.GlEvent
+namespace Engine.Graphics.Scheduler.GlEvent
 {
     public interface IGlEvent
     {

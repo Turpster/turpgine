@@ -1,36 +1,36 @@
-using Engine.Graphics.Execution;
+using System;
+using Engine.Graphics.Scheduler;
 
 namespace Engine.Graphics.Model
 {
-    public abstract class Model : GlObject, IRenderable
+    public abstract class Model : GlObject, IGlRenderable
     {
-        private readonly ModelManager _modelManager;
+        protected internal readonly ModelManager _modelManager;
 
-        protected Mesh _mesh;
+        public Mesh Mesh;
 
-        protected Model(ModelManager modelManager, Mesh mesh)
+        protected Model(ModelManager modelManager) : base(modelManager)
         {
             _modelManager = modelManager;
-
-            _mesh = mesh;
 
             _modelManager.Add(this);
         }
 
-        public abstract void Render();
+        public abstract GlCallResult GlRender();
 
         ~Model()
         {
             _modelManager.Remove(this);
         }
-        protected override GlAction _glInitialise()
+
+        public override GlCallResult _glInitialise()
         {
-            return new GlAction(() => throw new NotImplementedException());
+            return GlRenderHandler.GlCall(() => throw new NotImplementedException());
         }
 
-        protected override GlAction _glDispose()
+        public override GlCallResult _glDispose()
         {
-            return new GlAction(() => throw new NotImplementedException());
+            return GlRenderHandler.GlCall(() => throw new NotImplementedException());
         }
     }
 }

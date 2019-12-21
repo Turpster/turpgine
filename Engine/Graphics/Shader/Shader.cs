@@ -1,6 +1,6 @@
 using System.Text;
-using Engine.Graphics.Execution;
 using Engine.Graphics.GlException;
+using Engine.Graphics.Scheduler;
 using Logger;
 using OpenTK.Graphics.OpenGL;
 
@@ -8,6 +8,8 @@ namespace Engine.Graphics.Shader
 {
     public class Shader : GlObject
     {
+        protected ShaderProgramManager ShaderProgramManager;
+        
         public readonly ShaderType ShaderType;
 
         private readonly string _fileName;
@@ -15,8 +17,10 @@ namespace Engine.Graphics.Shader
 
         public string ShaderSource;
 
-        public Shader(string shaderSource, string fileName, ShaderType shaderType)
+        public Shader(ShaderProgramManager shaderProgramManager, string shaderSource, string fileName, ShaderType shaderType) : base(shaderProgramManager)
         {
+            ShaderProgramManager = shaderProgramManager;
+            
             _fileName = fileName;
 
             ShaderType = shaderType;
@@ -28,16 +32,16 @@ namespace Engine.Graphics.Shader
         {
             get
             {
-                Engine.Logger.Log(Level.Debug, "Getting Shader Source for shader " + GetHashCode() + ".");
+                Turpgine.Logger.Log(Level.Debug, "Getting Shader Source for shader " + GetHashCode() + ".");
                 
                 GL.GetShaderSource(GlShader, 1, out _, out string source);
-                return source.ToString();
+                return source;
             }
             set
             {
                 GL.DeleteShader(GlShader);
 
-                Engine.Logger.Log(Level.Debug, "Setting Shader Source for shader " + GetHashCode() + ".");
+                Turpgine.Logger.Log(Level.Debug, "Setting Shader Source for shader " + GetHashCode() + ".");
                 GL.ShaderSource(GlShader, value);
 
                 Compile();
@@ -46,7 +50,7 @@ namespace Engine.Graphics.Shader
 
         private void Compile()
         {
-            Engine.Logger.Log(Level.Debug, "Compiling Shader Source for shader " + GetHashCode() + ".");
+            Turpgine.Logger.Log(Level.Debug, "Compiling Shader Source for shader " + GetHashCode() + ".");
 
             GL.CompileShader(GlShader);
 
@@ -79,21 +83,10 @@ namespace Engine.Graphics.Shader
             return obj is Shader other && Equals(other);
         }
 
-        public override int GetHashCode()
-        {
-            unchecked
-            {
-                var hashCode = GlShader;
-                hashCode = (hashCode * 397) ^ (_fileName != null ? _fileName.GetHashCode() : 0);
-                hashCode = (hashCode * 397) ^ (int) ShaderType;
-                return hashCode;
-            }
-        }
 
-
-        protected override GlAction _glInitialise()
+        public override GlCallResult _glInitialise()
         {
-            return new GlAction(() =>
+            return ShaderProgramManager.GlCall(() =>
             {
                 GlShader = GL.CreateShader(ShaderType);
 
@@ -104,9 +97,9 @@ namespace Engine.Graphics.Shader
         }
 
 
-        protected override GlAction _glDispose()
+        public override GlCallResult _glDispose()
         {
-            return new GlAction(() =>
+            return ShaderProgramManager.GlCall(() =>
             {
                 GL.DeleteShader(GlShader);
             });

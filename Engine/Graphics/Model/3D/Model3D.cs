@@ -1,24 +1,29 @@
+using Engine.Graphics.Scheduler;
+
 namespace Engine.Graphics.Model._3D
 {
     public class Model3D : Model
     {
-        public Model3D(ModelManager modelManager, Mesh3D mesh) : base(modelManager, mesh)
+        public Model3D(ModelManager modelManager) : base(modelManager)
         {
         }
 
-        public override void Tick()
+        public override GlCallResult GlRender()
         {
-            _mesh.Tick();
+            return GlRenderHandler.GlCall(() =>
+            {
+                Mesh.GlRender();
+            }, true);
         }
 
-        protected override GlAction _glInitialise()
+        public override GlCallResult _glInitialise()
         {
-            return new GlAction(() => throw new NotImplementedException());
+            return GlRenderHandler.GlCall(() => { });
         }
-        
-        protected override GlAction _glDispose()
+
+        public override GlCallResult _glDispose()
         {
-            return new GlAction(() => throw new NotImplementedException());
+            return GlRenderHandler.GlCall(() => { });
         }
     }
-}
+} 

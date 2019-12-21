@@ -1,49 +1,33 @@
-using Engine.Graphics.Execution;
 using Engine.Graphics.Model;
+using Engine.Graphics.Scheduler;
 using Logger;
 
 namespace Engine.Graphics.Interface
 {
-    public abstract class GraphicalInterface : GlObject, IRenderable
+    public abstract class GraphicalInterface : GlRenderHandler
     {
-        private readonly GraphicalManager _graphicalManager;
-        protected readonly ModelManager ModelManager = new ModelManager();
+        private readonly GraphicalInterfaceManager _graphicalInterfaceManager;
+        protected readonly ModelManager ModelManager;
         public readonly string Name;
 
         public bool Hidden = false;
 
-        public GraphicalInterface(GraphicalManager graphicalManager, string name)
+        internal GraphicalInterface(GraphicalInterfaceManager graphicalInterfaceManager, string name) : base(graphicalInterfaceManager.GlMasterRenderHandler)
         {
-            Engine.Logger.Log(Level.Debug, "Creating Graphical Interface " + GetHashCode() + ".");
-
-            _graphicalManager = graphicalManager;
+            _graphicalInterfaceManager = graphicalInterfaceManager;
+            Turpgine.Logger.Log(Level.Debug, "Creating Graphical Interface " + GetHashCode() + ".");
             Name = name;
-
-            _graphicalManager._graphicalInterfaces.Add(Name, this);
+            ModelManager = new ModelManager(graphicalInterfaceManager);
+            _graphicalInterfaceManager._graphicalInterfaces.Add(Name, this);
         }
 
-        public void Render()
-        {
-            foreach (var model in ModelManager.GameModels) model.Render();
-        }
+        public GraphicalInterface(Turpgine turpgine, string name) : this(turpgine.GraphicalInterfaceManager, name) { }
 
         ~GraphicalInterface()
         {
-            Engine.Logger.Log(Level.Debug, "Deconstructing Graphical Interface " + GetHashCode() + ".");
+            Turpgine.Logger.Log(Level.Debug, "Deconstructing Graphical Interface " + GetHashCode() + ".");
 
-            _graphicalManager._graphicalInterfaces.Remove(Name);
-        }
-
-        protected internal override GlAction _glInitialise()
-        {
-            return new GlAction(() => { ModelManager._glInitialise(); });
-        }
-        protected internal override GlAction _glDispose()
-        {
-            return new GlAction(() =>
-            {
-                ModelManager._glDispose();
-            });
+            _graphicalInterfaceManager._graphicalInterfaces.Remove(Name);
         }
 
         public void Add(Model.Model obj)

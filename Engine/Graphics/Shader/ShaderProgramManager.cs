@@ -2,23 +2,22 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using Common;
-using Engine.Graphics.Execution;
+using Engine.Graphics.Scheduler;
 using Logger;
 using OpenTK.Graphics.OpenGL;
 
 namespace Engine.Graphics.Shader
 {
-    public class ShaderProgramManager : GlObject
+    public class ShaderProgramManager : GlRenderHandler
     {
         // TODO Create properties to pickup current shader through OpenGL.
         private static int _currentShaderHash;
         private readonly Dictionary<int, ShaderProgram> _shaderPrograms = new Dictionary<int, ShaderProgram>();
 
-        public ShaderProgramManager()
-        {
-        }
+        public ShaderProgramManager(GlMasterRenderHandler glMasterRenderHandler) : base(glMasterRenderHandler)
+        { }
 
-        public ShaderProgramManager(ShaderProgram shaderProgram)
+        public ShaderProgramManager(GlMasterRenderHandler glMasterRenderHandler, ShaderProgram shaderProgram) : base(glMasterRenderHandler)
         {
             Add(shaderProgram);
         }
@@ -27,7 +26,7 @@ namespace Engine.Graphics.Shader
 
         protected internal void GlUse(ShaderProgram targetShaderProgram)
         {
-            Engine.Logger.Log(Level.Debug, "Using ShaderProgram " + targetShaderProgram.GetHashCode() + ".");
+            Turpgine.Logger.Log(Level.Debug, "Using ShaderProgram " + targetShaderProgram.GetHashCode() + ".");
 
             if (!_shaderPrograms.ContainsKey(targetShaderProgram.GetHashCode()))
                 throw new ArgumentException("Shader Program has not been added to Hash Dictionary.");
@@ -39,52 +38,49 @@ namespace Engine.Graphics.Shader
         // TODO Ensure ShaderProgram is not bound to any other manager
         public void Add(ShaderProgram shaderProgram)
         {
-            Engine.Logger.Log(Level.Debug, "Adding ShaderProgram " + shaderProgram.GetHashCode() + ".");
+            Turpgine.Logger.Log(Level.Debug, "Adding ShaderProgram " + shaderProgram.GetHashCode() + ".");
             _shaderPrograms.Add(shaderProgram.GetHashCode(), shaderProgram);
         }
 
         public void Remove(ShaderProgram shaderProgram)
         {
-            Engine.Logger.Log(Level.Debug, "Removing ShaderProgram " + shaderProgram.GetHashCode() + ".");
+            Turpgine.Logger.Log(Level.Debug, "Removing ShaderProgram " + shaderProgram.GetHashCode() + ".");
             _shaderPrograms.Remove(shaderProgram.GetHashCode());
         }
 
-        protected override GlAction _glInitialise()
+        public override GlCallResult _glInitialise()
         {
-            return new GlAction(() =>
+            return GlCall(() =>
             {
                 var assembly = Assembly.GetExecutingAssembly();
 
                 var vertexShaderResource = "Engine.Graphics.Shader.GLSL.vertex-shader.vert";
                 var fragmentShaderResource = "Engine.Graphics.Shader.GLSL.fragment-shader.frag";
 
-                Engine.Logger.Log(Level.Debug, "Loading resource '" + vertexShaderResource + "'.");
+                Turpgine.Logger.Log(Level.Debug, "Loading resource '" + vertexShaderResource + "'.");
                 var vertexShader =
-                    new Shader(
+                    new Shader(this,
                         StreamUtil.ReadStringStream(
                             assembly.GetManifestResourceStream(vertexShaderResource)),
                         "vertex-shader.vert", ShaderType.VertexShader);
 
-                Engine.Logger.Log(Level.Debug, "Loading resource '" + fragmentShaderResource + "'.");
+                Turpgine.Logger.Log(Level.Debug, "Loading resource '" + fragmentShaderResource + "'.");
                 var fragmentShader =
-                    new Shader(
+                    new Shader(this,
                         StreamUtil.ReadStringStream(
                             assembly.GetManifestResourceStream(fragmentShaderResource)),
                         "fragment-shader.frag", ShaderType.FragmentShader);
 
-                var shaderProgram = new ShaderProgram(vertexShader, fragmentShader);
-
-                shaderProgram._glInitialise();
-
+                var shaderProgram = new ShaderProgram(this, vertexShader, fragmentShader);
+                
                 Add(shaderProgram);
-
                 GlUse(shaderProgram);
             });
         }
 
-        protected override GlAction _glDispose()
+        public override GlCallResult _glDispose()
         {
-            return new GlAction(() => { throw new NotImplementedException(); });
+            return GlCall(() => { throw new NotImplementedException(); });
         }
     }
 }

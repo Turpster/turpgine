@@ -1,6 +1,6 @@
 using System;
-using Engine.Graphics.Execution;
 using Engine.Graphics.GlException;
+using Engine.Graphics.Scheduler;
 using Logger;
 using OpenTK.Graphics.OpenGL;
 
@@ -10,8 +10,11 @@ namespace Engine.Graphics.Shader
     {
         private int GlProgram;
 
-        public ShaderProgram(Shader vertexShader, Shader fragmentShader)
+        protected ShaderProgramManager ShaderProgramManager;
+
+        public ShaderProgram(ShaderProgramManager shaderProgramManager, Shader vertexShader, Shader fragmentShader) : base(shaderProgramManager)
         {
+            ShaderProgramManager = shaderProgramManager;
             VertexShader = vertexShader;
             FragmentShader = fragmentShader;
         }
@@ -23,7 +26,7 @@ namespace Engine.Graphics.Shader
             get => Shaders[ShaderIndex.Vertex.Value];
             set
             {
-                Engine.Logger.Log(Level.Debug, "Using Vertex Shader " + value.GetHashCode() + ".");
+                Turpgine.Logger.Log(Level.Debug, "Using Vertex Shader " + value.GetHashCode() + ".");
 
                 var vertIndex = ShaderIndex.Vertex.Value;
 
@@ -36,7 +39,7 @@ namespace Engine.Graphics.Shader
             get => Shaders[ShaderIndex.Fragment.Value];
             set
             {
-                Engine.Logger.Log(Level.Debug, "Using Fragment Shader " + value.GetHashCode() + ".");
+                Turpgine.Logger.Log(Level.Debug, "Using Fragment Shader " + value.GetHashCode() + ".");
 
                 var fragIndex = ShaderIndex.Fragment.Value;
 
@@ -68,14 +71,14 @@ namespace Engine.Graphics.Shader
 
         private void GlUnload()
         {
-            Engine.Logger.Log(Level.Debug, "Unloading ShaderProgram " + GetHashCode() + ".");
+            Turpgine.Logger.Log(Level.Debug, "Unloading ShaderProgram " + GetHashCode() + ".");
 
             GL.DeleteProgram(GlProgram);
         }
 
         private void Link()
         {
-            Engine.Logger.Log(Level.Debug, "Linking ShaderProgram " + GetHashCode() + ".");
+            Turpgine.Logger.Log(Level.Debug, "Linking ShaderProgram " + GetHashCode() + ".");
 
             GL.LinkProgram(GlProgram);
             GL.GetProgram(GlProgram, GetProgramParameterName.LinkStatus, out var linkStatus);
@@ -84,7 +87,7 @@ namespace Engine.Graphics.Shader
 
         private void Validate()
         {
-            Engine.Logger.Log(Level.Debug, "Validating ShaderProgram " + GetHashCode() + ".");
+            Turpgine.Logger.Log(Level.Debug, "Validating ShaderProgram " + GetHashCode() + ".");
 
             GL.ValidateProgram(GlProgram);
             GL.GetProgram(GlProgram, GetProgramParameterName.ValidateStatus, out var validateStatus);
@@ -93,7 +96,7 @@ namespace Engine.Graphics.Shader
 
         private void GlLoad()
         {
-            Engine.Logger.Log(Level.Debug, "Loading ShaderProgram " + GetHashCode() + ".");
+            Turpgine.Logger.Log(Level.Debug, "Loading ShaderProgram " + GetHashCode() + ".");
 
             GlProgram = GL.CreateProgram();
 
@@ -110,21 +113,22 @@ namespace Engine.Graphics.Shader
             GlUnload();
             GlLoad();
         }
-        protected override GlAction _glInitialise()
-        {
-            return new GlAction(() =>
-            {
-                foreach (var shader in Shaders) shader._glInitialise();
 
+        public override GlCallResult _glInitialise()
+        {
+            return ShaderProgramManager.GlCall(() =>
+            {
+                // TODO Init shader?
+            
                 GlLoad();
 
-                foreach (var shader in Shaders) shader._glDispose();
+                foreach (var shader in Shaders) shader.Dispose();
             });
         }
 
-        protected override GlAction _glDispose()
+        public override GlCallResult _glDispose()
         {
-            return new GlAction(() =>
+            return ShaderProgramManager.GlCall(() =>
             { 
                 throw new NotImplementedException();
             });
